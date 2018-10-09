@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans';
+}
+
+.header {
+    background-color: #2a3f5f;
+    height: 100px;
+    line-height: 100px;
+    color: white;
+    padding-left: 3%;
+    padding-right: 3%;
+    font-size: 30px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.item {
+    flex: 1;
+}
+
+img {
+    flex: 0;
+    align-self: center;
+    height: 70%;
+}
