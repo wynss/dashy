@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Open Sans';
+    background-color: #fafbfc;
 }
 
 .header {
@@ -22,6 +23,30 @@ body {
 
 .item {
     flex: 1;
+}
+
+
+.tabs {
+    border-bottom: 1px solid #d6d6d6;
+}
+
+.tab {
+    color:gray;
+    background-color: #fafbfc !important;
+    border-top: 3px solid transparent !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 0px !important;
+}
+
+.tab--selected {
+    color: black;
+    background-color: white !important;
+    box-shadow: 1px 1px 0px white;
+    border-left: 1px solid lightgrey !important;
+    border-right: 1px solid lightgrey !important;
+    border-top: 3px solid #00E676 !important;
+    border-bottom: 1px solid #d6d6d6 !important;
 }
 
 img {
