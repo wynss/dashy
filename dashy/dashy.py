@@ -2,33 +2,34 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-
-def header(title, cn=None, logo=None):
-
-    t = html.Div(title, className='item')
-    children = [t]
-
-    if logo is not None:
-        img = html.Img(src=logo)
-        children.append(img)
-
-    h = html.Div(children, className='header container')
-    return h
+from dashy import config as cfg
+from dashy import layout_builder as lb
 
 
-def tabs():
+def tabs(labels: list, values: list = None) -> html.Div:
     children = []
     children.append(dcc.Tab(label='Test', value='test',
                             className='tab', selected_className='tab--selected'))
     children.append(dcc.Tab(label='Tabs', value='tabs',
                             className='tab', selected_className='tab--selected'))
-    return dcc.Tabs(id='tabs', children=children, className='tabs')
+
+    return dcc.Tabs(id='tabs-example', children=children, className='tabs')
 
 
-def create_app(children: list, static_folder: str=None):
-    app = dash.Dash(static_folder=static_folder)
+def create_app(layout: list = None, assets_folder: str = None):
 
-    children.append(html.Link(href="https://fonts.googleapis.com/css?family=Open+Sans", rel="stylesheet"))
+    if layout is None:
+        layout = lb.demo_layout()
 
-    app.layout = html.Div(children)
+    if assets_folder is None:
+        assets_folder = cfg.ASSETS_PATH
+
+    app = dash.Dash(
+        name=__name__, 
+        assets_url_path=assets_folder, 
+        external_scripts=cfg.EXTERNAL_SCRIPTS,
+        external_stylesheets=cfg.EXTERNAL_STYLESHEETS
+    )
+
+    app.layout = html.Div(layout)
     return app

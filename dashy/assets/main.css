@@ -5,6 +5,12 @@ body {
     background-color: #fafbfc;
 }
 
+
+.main-container {
+    display: flex;
+}
+
+
 .header {
     background-color: #2a3f5f;
     height: 100px;
@@ -16,15 +22,30 @@ body {
 }
 
 .container {
+    flex: 1;
     display: flex;
-    flex-direction: row;
+    background-color: white;
+}
+
+.curved {
+    border-radius: 10px;
+}
+
+.align-center {
     justify-content: center;
 }
 
-.item {
-    flex: 1;
+.align-left {
+    justify-content: left;
 }
 
+.row {
+    flex-direction: row
+}
+
+.col {
+    flex-direction: column
+}
 
 .tabs {
     border-bottom: 1px solid #d6d6d6;
@@ -49,8 +70,66 @@ body {
     border-bottom: 1px solid #d6d6d6 !important;
 }
 
-img {
-    flex: 0;
-    align-self: center;
-    height: 70%;
+.s12 {
+    font-size: 12px
+}
+
+.s14 {
+    font-size: 14px
+}
+
+.s16 {
+    font-size: 16px
+}
+
+.s18 {
+    font-size: 18px
+}
+
+.s20 {
+    font-size: 20px
+}
+
+.s22 {
+    font-size: 22px
+}
+
+.s24 {
+    font-size: 24px
+}
+
+.s26 {
+    font-size: 26px
+}
+
+.s28 {
+    font-size: 28px
+}
+
+.s30 {
+    font-size: 30px
+}
+
+.m3 {
+    margin: 3px;
+}
+
+.m5 {
+    margin: 5px;
+}
+
+.m10 {
+    margin: 10px;
+}
+
+.p3 {
+    padding: 3px;
+}
+
+.p5 {
+    padding: 5px;
+}
+
+.p10 {
+    padding: 10px;
 }
