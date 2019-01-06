@@ -9,5 +9,12 @@ from dashy import dashy as dy
 
 app = dy.create_app()
 
+
+# TODO: Idea for callbacks
+# @dy.callback(('scatter-graph', 'figure'), [('my-button', 'click')])
+# def update_scatter():
+#     pass
+
+
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)

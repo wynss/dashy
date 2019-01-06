@@ -1,3 +1,5 @@
+import os
+
 
 ASSETS_PATH = '/Users/toniaxelsson/code/projects/dashy/dashy/assets'
 
@@ -9,6 +11,4 @@ EXTERNAL_STYLESHEETS = [
     }
 ]
 
-EXTERNAL_SCRIPTS = [
-    {'src': 'cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js'}
-]
+EXTERNAL_SCRIPTS = []

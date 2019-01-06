@@ -1,3 +1,9 @@
+# PyCharm
 __pycache__/
 .idea/
+
+# Visual Studio Code
 .vscode/
+
+# Mac
+.DS_Store
