@@ -3,6 +3,9 @@ import dash_core_components as dcc
 import plotly.graph_objs as go
 
 
+#----------------------------------------------------------
+#   Static UI components
+#----------------------------------------------------------
 def header(title: str, logo: str = None) -> html.Div:
     t = html.Div(title, className='item')
     children = [t]
@@ -58,10 +61,25 @@ def code(src: str, id: str = None, tight=False):
 
     return html.Pre(html.Code(**kwargs), className=' '.join(css_classes))
 
+
 #----------------------------------------------------------
-#   Graphs
+#   UI components
 #----------------------------------------------------------
 
+def button(title: str, id: str = None, font_size: int = 14):
+
+    kwargs = {
+        'className': f'std-button s{font_size}'
+    }
+
+    if id is not None:
+        kwargs['id'] = id
+
+    return html.Div(html.Button(title, **kwargs), className='container curved m10 p10')
+
+#----------------------------------------------------------
+#   Graphs
+#---------------------------------------------------------
 def scatter(x, y, title: str = None, id: str = None):
     data = go.Scatter(x=x, y=y, mode='markers')
     layout = go.Layout(title=title)

@@ -4,16 +4,27 @@ import os
 cwd = os.getcwd()
 sys.path.append(os.path.join(cwd))
 
-from dashy import dashy as dy
+import dashy as dy
+import dashy.components as cp
+import dashy.layout_builder as lb
+import numpy as np
 
 
-app = dy.create_app()
+layout = [
+    cp.header('Demo App'),
+    lb.wrap([
+        cp.button('A Button', id='my-button'),
+        cp.line(title='A Line Plot', x=np.arange(10), y=np.arange(10) + np.random.rand(10), id='line-plot')
+    ], direction='col')
+]
+
+app = dy.create_app(layout=layout)
 
 
 # TODO: Idea for callbacks
-# @dy.callback(('scatter-graph', 'figure'), [('my-button', 'click')])
+# @dy.callback(('line-plot', 'figure'), [('my-button', 'click')])
 # def update_scatter():
-#     pass
+#      pass
 
 
 if __name__ == '__main__':
