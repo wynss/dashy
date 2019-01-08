@@ -33,10 +33,9 @@ def demo_layout():
     return layout
 
 
-def wrap(components:list, direction: str = 'row'):
+def wrap(components: list, direction: str = 'row'):
 
     for c in components:
-
         # remove container class
         css_classes = c.className.split(' ')
         if 'curved' in css_classes:
@@ -45,3 +44,11 @@ def wrap(components:list, direction: str = 'row'):
 
     css_class = f'container curved {direction} m10 p10'
     return html.Div(components, className=css_class)
+
+
+def row(components: list):
+    return wrap(components, direction='row')
+
+
+def col(components: list):
+    return wrap(components, direction='col')
