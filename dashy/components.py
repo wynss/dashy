@@ -77,6 +77,30 @@ def button(title: str, id: str = None, font_size: int = 14):
     return html.Div(html.Button(title, **kwargs), className='container curved m10 p10')
 
 
+def dropdown(title: str, id: str = None, labels: list = None, placeholder: str = None, clearable=True,
+             searchable=False):
+
+    kwargs = {
+        'clearable': clearable,
+        'searchable': searchable
+    }
+
+    if labels is not None:
+        options = [{'label': label, 'value': label.lower().replace(' ', '-')} for label in labels]
+        kwargs['options'] = options
+
+    if id is not None:
+        kwargs[id] = id
+
+    if placeholder is not None:
+        kwargs['placeholder'] = placeholder
+
+    title_div = html.Div(title)
+    dd = dcc.Dropdown(**kwargs)
+
+    return html.Div([title_div, dd], className='container col m10 p10')
+
+
 # ----------------------------------------------------------
 #   Graphs
 # ---------------------------------------------------------
