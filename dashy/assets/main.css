@@ -1,8 +1,8 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans';
-    background-color: #fafbfc;
+    font-family: 'Open Sans', serif;
+    background-color: #e5e8e6;
 }
 
 
@@ -19,6 +19,8 @@ body {
 /* Layout */
 .main-container {
     display: flex;
+    flex-direction: column;
+    margin: 20px;
 }
 
 .container {
@@ -28,7 +30,7 @@ body {
 }
 
 .curved {
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .align-center {

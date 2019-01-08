@@ -3,9 +3,9 @@ import dash_core_components as dcc
 import plotly.graph_objs as go
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 #   Static UI components
-#----------------------------------------------------------
+# ----------------------------------------------------------
 def header(title: str, logo: str = None) -> html.Div:
     t = html.Div(title, className='item')
     children = [t]
@@ -62,10 +62,9 @@ def code(src: str, id: str = None, tight=False):
     return html.Pre(html.Code(**kwargs), className=' '.join(css_classes))
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 #   UI components
-#----------------------------------------------------------
-
+# ----------------------------------------------------------
 def button(title: str, id: str = None, font_size: int = 14):
 
     kwargs = {
@@ -77,33 +76,35 @@ def button(title: str, id: str = None, font_size: int = 14):
 
     return html.Div(html.Button(title, **kwargs), className='container curved m10 p10')
 
-#----------------------------------------------------------
+
+# ----------------------------------------------------------
 #   Graphs
-#---------------------------------------------------------
-def scatter(x, y, title: str = None, id: str = None):
-    data = go.Scatter(x=x, y=y, mode='markers')
-    layout = go.Layout(title=title)
-    figure = go.Figure(data=[data], layout=layout)
+# ---------------------------------------------------------
+def scatter(x=None, y=None, title: str = None, id: str = None):
+    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers')
+
+
+def line(x=None, y=None, title: str = None, id: str = None):
+    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='lines')
+
+
+def _line_scatter_graph(id, x, y, title: str, mode: str) -> dcc.Graph:
+
+    if x is None or y is None:
+        data = []
+    else:
+        data = [go.Scatter(x=x, y=y, mode=mode)]
+
+    if title is None:
+        layout = go.Layout()
+    else:
+        layout = go.Layout(title=title)
+
+    figure = go.Figure(layout=layout, data=data)
 
     kwargs = {
         'figure': figure,
-        'className': 'container curved'
-    }
-
-    if id is not None:
-        kwargs['id'] = id
-
-    return dcc.Graph(**kwargs)
-
-
-def line(x, y, title: str = None, id: str = None):
-    data = go.Scatter(x=x, y=y, mode='lines')
-    layout = go.Layout(title=title)
-    figure = go.Figure(data=[data], layout=layout)
-
-    kwargs = {
-        'figure': figure,
-        'className': 'container curved'
+        'className': 'container curved p10 m10'
     }
 
     if id is not None:

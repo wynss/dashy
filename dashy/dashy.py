@@ -6,9 +6,6 @@ from dashy import config as cfg
 from dashy import layout_builder as lb
 
 
-APP = None
-
-
 def tabs(labels: list, values: list = None) -> html.Div:
     children = []
     children.append(dcc.Tab(label='Test', value='test',
