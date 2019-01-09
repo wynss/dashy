@@ -33,7 +33,30 @@ def demo_layout():
     return layout
 
 
+def row(components: list):
+    """
+    Helper for wrapping components into a colum. See doc for function 'wrap'.
+    """
+    return wrap(components, direction='row')
+
+
+def col(components: list):
+    """
+    Helper for wrapping components into a row. See doc for function 'wrap'.
+    """
+    return wrap(components, direction='col')
+
+
 def wrap(components: list, direction: str = 'row'):
+    """
+    Wraps components together either in a row or in a column.
+    The returned component is a flexbox container containing the passed
+    components.
+
+    Args:
+        components: List with components to wrap
+        direction: Wrap to a row or column
+    """
 
     for c in components:
         # remove container class
@@ -44,11 +67,3 @@ def wrap(components: list, direction: str = 'row'):
 
     css_class = f'container curved {direction} m10 p10'
     return html.Div(components, className=css_class)
-
-
-def row(components: list):
-    return wrap(components, direction='row')
-
-
-def col(components: list):
-    return wrap(components, direction='col')

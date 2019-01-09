@@ -17,6 +17,15 @@ def tabs(labels: list, values: list = None) -> html.Div:
 
 
 def create_app(layout: list = None, assets_folder: str = None):
+    """
+    Create an dashy app
+
+    Args:
+        layout: UI layout to be display by the app
+        assets_folder: Path to all assets files to be used
+    Returns:
+        A DashyApp object
+    """
 
     if layout is None:
         layout = lb.demo_layout()
@@ -33,10 +42,6 @@ def create_app(layout: list = None, assets_folder: str = None):
 
     app.layout = html.Div(layout)
     return app
-
-
-def callback(output, inputs):
-    pass
 
 
 class DashyApp(dash.Dash):
