@@ -87,7 +87,6 @@ body {
     background-color: #4a6f8e
 }
 
-
 /* helpers for padding, margins and sizes */
 .s12 {
     font-size: 12px
@@ -151,4 +150,8 @@ body {
 
 .p10 {
     padding: 10px;
+}
+
+._dash-undo-redo {
+    display: none;
 }

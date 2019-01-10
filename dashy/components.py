@@ -77,8 +77,32 @@ def button(title: str, id: str = None, font_size: int = 14):
     return html.Div(html.Button(title, **kwargs), className='container curved m10 p10')
 
 
-def dropdown(title: str, id: str = None, labels: list = None, placeholder: str = None, clearable=True,
-             searchable=False):
+def radio_buttons(labels: list, title: str = None, id: str = None, initial_label=None):
+
+    options = _options_from_labels(labels)
+
+    kwargs = {
+        'options': options,
+        'className': 'container curved m10 p10'
+    }
+
+    if id is not None:
+        kwargs['id'] = id
+
+    if initial_label is not None:
+        if isinstance(initial_label, int):
+            kwargs['value'] = _value_from_label(labels[initial_label])
+        elif isinstance(initial_label, str):
+            if initial_label in labels:
+                kwargs['value'] = _value_from_label(initial_label)
+            else:
+                raise ValueError("'initial_label' does not exist in 'labels' list")
+
+    return dcc.RadioItems(**kwargs)
+
+
+def dropdown(title: str, id: str = None, labels: list = None, initial_label=None, placeholder: str = None,
+             clearable=True, searchable=False):
 
     kwargs = {
         'clearable': clearable,
@@ -86,11 +110,20 @@ def dropdown(title: str, id: str = None, labels: list = None, placeholder: str =
     }
 
     if labels is not None:
-        options = [{'label': label, 'value': label.lower().replace(' ', '-')} for label in labels]
+        options = _options_from_labels(labels)
         kwargs['options'] = options
 
+        if initial_label is not None:
+            if isinstance(initial_label, int):
+                kwargs['value'] = _value_from_label(labels[initial_label])
+            elif isinstance(initial_label, str):
+                if initial_label in labels:
+                    kwargs['value'] = _value_from_label(initial_label)
+                else:
+                    raise ValueError("'initial_label' does not exist in 'labels' list")
+
     if id is not None:
-        kwargs[id] = id
+        kwargs['id'] = id
 
     if placeholder is not None:
         kwargs['placeholder'] = placeholder
@@ -103,7 +136,7 @@ def dropdown(title: str, id: str = None, labels: list = None, placeholder: str =
 
 # ----------------------------------------------------------
 #   Graphs
-# ---------------------------------------------------------
+# ----------------------------------------------------------
 def scatter(x=None, y=None, title: str = None, id: str = None, height: int = None):
     return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers', height=height)
 
@@ -144,3 +177,19 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int) -> dcc.Gra
     kwargs['style'] = style
 
     return dcc.Graph(**kwargs)
+
+
+# ----------------------------------------------------------
+#   Helpers
+# ----------------------------------------------------------
+def _options_from_labels(labels):
+    options = []
+    for l in labels:
+        if not isinstance(l, str):
+            raise ValueError('Labels must be strings')
+        options.append({'label': l, 'value': _value_from_label(l)})
+    return options
+
+
+def _value_from_label(label):
+    return label.lower().replace(' ', '-').replace('/', '-')

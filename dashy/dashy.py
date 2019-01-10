@@ -51,5 +51,5 @@ class DashyApp(dash.Dash):
     def __init__(self, **kwargs):
         super(DashyApp, self).__init__(**kwargs)
 
-    def run(self, debug=False):
-        self.run_server(debug=debug)
+    def run(self, debug=False, **kwargs):
+        self.run_server(debug=debug, **kwargs)
