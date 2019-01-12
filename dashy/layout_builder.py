@@ -60,9 +60,7 @@ def wrap(components: list, direction: str = 'row'):
 
     for c in components:
         # remove container class
-        css_classes = c.className.split(' ')
-        if 'curved' in css_classes:
-            css_classes.remove('curved')
+        css_classes = c.className.split(' ')[:1]
         c.className = ' '.join(css_classes)
 
     css_class = f'container curved {direction} m10 p10'

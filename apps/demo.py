@@ -7,6 +7,7 @@ sys.path.append(os.path.join(cwd))
 import dashy as dy
 import dashy.components as cp
 import dashy.layout_builder as lb
+from dashy import theme
 import numpy as np
 
 
@@ -18,13 +19,19 @@ layout = [
     lb.col([
         cp.button('A Button', id='my-button'),
         lb.row([
-            cp.line(title='A Line Plot', x=x, y=y, height=800),
-            cp.scatter(title='Scatter Plot', x=x, y=y)
+            cp.line(title='A Line Plot', x=x, y=y, height=500),
+            cp.scatter(title='Scatter Plot', x=x, y=y, height=500)
         ])
     ])
 ]
 
-app = dy.create_app(layout=layout)
+app = dy.create_app(layout=layout, theme=theme.StandardTheme)
+
+
+@dy.callback
+def update():
+    print('inside update func')
+
 
 
 # TODO: Idea for callbacks

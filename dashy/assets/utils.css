@@ -1,0 +1,68 @@
+/* helpers for padding, margins and sizes */
+.s12 {
+    font-size: 12px
+}
+
+.s14 {
+    font-size: 14px
+}
+
+.s16 {
+    font-size: 16px
+}
+
+.s18 {
+    font-size: 18px
+}
+
+.s20 {
+    font-size: 20px
+}
+
+.s22 {
+    font-size: 22px
+}
+
+.s24 {
+    font-size: 24px
+}
+
+.s26 {
+    font-size: 26px
+}
+
+.s28 {
+    font-size: 28px
+}
+
+.s30 {
+    font-size: 30px
+}
+
+.m3 {
+    margin: 3px;
+}
+
+.m5 {
+    margin: 5px;
+}
+
+.m10 {
+    margin: 10px;
+}
+
+.p3 {
+    padding: 3px;
+}
+
+.p5 {
+    padding: 5px;
+}
+
+.p10 {
+    padding: 10px;
+}
+
+._dash-undo-redo {
+    display: none;
+}
