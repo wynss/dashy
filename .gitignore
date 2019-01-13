@@ -1,5 +1,7 @@
 # Generated files
 main.css
+dist/
+*.egg-info/
 
 # PyCharm
 __pycache__/

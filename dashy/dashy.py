@@ -69,11 +69,3 @@ class DashyApp(dash.Dash):
 
         # Start server
         self.run_server(debug=debug, **kwargs)
-
-
-
-def callback(func):
-    def wrapper():
-        print('inside wrapper func')
-        func()
-    return wrapper
