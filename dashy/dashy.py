@@ -1,9 +1,10 @@
 from functools import wraps
 
 import dash
+from dash.dependencies import Output, Input, State
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Output, Input, State
+import plotly.graph_objs as go
 
 from dashy import config as cfg
 from dashy import layout_builder as lb
@@ -48,6 +49,7 @@ def create_app(layout: list = None, theme=theme.StandardTheme, assets_folder: st
     )
 
     app.layout = html.Div(layout)
+    global APP
     APP = app
 
     return app
@@ -69,3 +71,24 @@ class DashyApp(dash.Dash):
 
         # Start server
         self.run_server(debug=debug, **kwargs)
+
+
+# TODO: Experiment with wrapping Dash callbacks
+def callback(output, inputs):
+    output_id, action = output
+
+    # TODO: Handle output and inputs here so we can pass them to Dash callback
+
+    def decorator_callback(func):
+
+        @APP.callback(Output(output_id, 'figure'), [Input(inputs, 'n_clicks')])
+        def dash_update(n):
+            x, y = func(n)
+            return go.Figure(data=[go.Scatter(x=x, y=y, mode='lines')])
+
+        # For completness
+        wraps(func)
+        def wrapper():
+            return None
+        return wrapper
+    return decorator_callback
