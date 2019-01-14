@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 
 import dash
@@ -10,7 +11,9 @@ from dashy import config as cfg
 from dashy import layout_builder as lb
 from dashy import theme
 
-APP = None
+logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def tabs(labels: list, values: list = None) -> html.Div:
@@ -64,6 +67,8 @@ class DashyApp(dash.Dash):
 
         self.theme = theme()
 
+        self.hidden_div_count = 0
+
     def run(self, debug=False, **kwargs):
 
         # Generate css files for theme
@@ -72,23 +77,40 @@ class DashyApp(dash.Dash):
         # Start server
         self.run_server(debug=debug, **kwargs)
 
+    def bind(self, inputs, output=None):
+        if output is None:
+            self.hidden_div_count += 1
+            output_id = f'auto-hidden-{self.hidden_div_count}'
+            output_element = 'children'
+            self.layout.children.append(html.Div(id=output_id, style={'display': 'none'}))
+        else:
+            output_id, output_action = output
 
-# TODO: Experiment with wrapping Dash callbacks
-def callback(output, inputs):
-    output_id, action = output
+        if not isinstance(inputs, tuple) and isinstance(inputs, list):
+            raise ValueError("'inputs' needs to be a tuple or a list of tuples")
+        elif isinstance(inputs, tuple):
+            inputs = [inputs]
 
-    # TODO: Handle output and inputs here so we can pass them to Dash callback
+        input_list = []
+        for i in inputs:
+            if not isinstance(i, tuple):
+                raise ValueError(f'input must be tuple was: {type(i)}')
+            if len(i) != 2:
+                raise ValueError('input must contain exactly 2 strings')
 
-    def decorator_callback(func):
+            input_id, input_action = i
+            input_list.append(Input(input_id, input_action))
 
-        @APP.callback(Output(output_id, 'figure'), [Input(inputs, 'n_clicks')])
-        def dash_update(n):
-            x, y = func(n)
-            return go.Figure(data=[go.Scatter(x=x, y=y, mode='lines')])
+        def decorator_callback(func):
+            @self.callback(Output(output_id, output_element), input_list)
+            def dash_update(*args, **kwargs):
+                return func(*args, **kwargs)
 
-        # For completness
-        wraps(func)
-        def wrapper():
-            return None
-        return wrapper
-    return decorator_callback
+            # For completeness
+            wraps(func)
+
+            def wrapper():
+                return None
+            return wrapper
+
+        return decorator_callback
