@@ -16,22 +16,13 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def tabs(labels: list, values: list = None) -> html.Div:
-    children = []
-    children.append(dcc.Tab(label='Test', value='test',
-                            className='tab', selected_className='tab--selected'))
-    children.append(dcc.Tab(label='Tabs', value='tabs',
-                            className='tab', selected_className='tab--selected'))
-
-    return dcc.Tabs(id='tabs-example', children=children, className='tabs')
-
-
 def create_app(layout: list = None, theme=theme.StandardTheme, assets_folder: str = None):
     """
     Create an dashy app
 
     Args:
         layout: UI layout to be display by the app
+        theme: UI Theme to be used
         assets_folder: Path to all assets files to be used
     Returns:
         A DashyApp object
@@ -77,16 +68,23 @@ class DashyApp(dash.Dash):
         # Start server
         self.run_server(debug=debug, **kwargs)
 
-    def bind(self, inputs, output=None):
+    def bind(self, inputs, output=None, states=None):
+
+        # Handle outputs
         if output is None:
             self.hidden_div_count += 1
             output_id = f'auto-hidden-{self.hidden_div_count}'
             output_element = 'children'
             self.layout.children.append(html.Div(id=output_id, style={'display': 'none'}))
         else:
-            output_id, output_action = output
+            if not isinstance(output, tuple):
+                raise ValueError("'output' needs to be a tuple")
+            if not len(output) == 2:
+                raise ValueError('output must contain exactly 2 strings')
+            output_id, output_element = output
 
-        if not isinstance(inputs, tuple) and isinstance(inputs, list):
+        # Handle inputs
+        if not isinstance(inputs, tuple) and not isinstance(inputs, list):
             raise ValueError("'inputs' needs to be a tuple or a list of tuples")
         elif isinstance(inputs, tuple):
             inputs = [inputs]
@@ -94,21 +92,38 @@ class DashyApp(dash.Dash):
         input_list = []
         for i in inputs:
             if not isinstance(i, tuple):
-                raise ValueError(f'input must be tuple was: {type(i)}')
+                raise ValueError(f'a state must be tuple was: {type(i)}')
             if len(i) != 2:
-                raise ValueError('input must contain exactly 2 strings')
+                raise ValueError('a state must contain exactly 2 strings')
 
-            input_id, input_action = i
-            input_list.append(Input(input_id, input_action))
+            input_id, input_element = i
+            input_list.append(Input(input_id, input_element))
+
+        # handle states
+        state_list = []
+        if states is not None:
+
+            if not isinstance(states, tuple) and not isinstance(states, list):
+                raise ValueError("'states' needs to be a tuple or a list of tuples")
+            elif isinstance(states, tuple):
+                states = [states]
+
+            for s in states:
+                if not isinstance(s, tuple):
+                    raise ValueError(f'a state must be tuple was: {type(s)}')
+                if len(s) != 2:
+                    raise ValueError('a state must contain exactly 2 strings')
+                state_id, state_element = s
+                state_list.append(State(state_id, state_element))
 
         def decorator_callback(func):
-            @self.callback(Output(output_id, output_element), input_list)
+            # Create real Dash callback
+            @self.callback(output=Output(output_id, output_element), inputs=input_list, state=state_list)
             def dash_update(*args, **kwargs):
                 return func(*args, **kwargs)
 
             # For completeness
             wraps(func)
-
             def wrapper():
                 return None
             return wrapper

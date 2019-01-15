@@ -137,15 +137,15 @@ def dropdown(title: str, id: str = None, labels: list = None, initial_label=None
 # ----------------------------------------------------------
 #   Graphs
 # ----------------------------------------------------------
-def scatter(x=None, y=None, title: str = None, id: str = None, height: int = None):
-    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers', height=height)
+def scatter(x=None, y=None, title: str = None, id: str = None, figure: go.Figure = None, height: int = None):
+    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers', figure=figure, height=height)
 
 
-def line(x=None, y=None, title: str = None, id: str = None, height: int = None):
-    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='lines', height=height)
+def line(x=None, y=None, title: str = None, id: str = None, figure: go.Figure = None, height: int = None):
+    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='lines', figure=figure, height=height)
 
 
-def _line_scatter_graph(id, x, y, title: str, mode: str, height: int) -> dcc.Graph:
+def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go.Figure = None) -> dcc.Graph:
 
     # Create data list
     if x is None or y is None:
@@ -153,13 +153,14 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int) -> dcc.Gra
     else:
         data = [go.Scatter(x=x, y=y, mode=mode)]
 
-    # Create layout
-    if title is None:
-        layout = go.Layout()
-    else:
-        layout = go.Layout(title=title)
+    if figure is None:
+        # Create layout
+        if title is None:
+            layout = go.Layout()
+        else:
+            layout = go.Layout(title=title)
 
-    figure = go.Figure(layout=layout, data=data)
+        figure = go.Figure(layout=layout, data=data)
 
     kwargs = {
         'figure': figure,
