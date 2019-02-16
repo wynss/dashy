@@ -9,14 +9,15 @@ import plotly.graph_objs as go
 
 from dashy import config as cfg
 from dashy import layout_builder as lb
-from dashy import theme
+from dashy import components as cp
+from dashy import themes
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_app(layout: list = None, theme=theme.StandardTheme, assets_folder: str = None):
+def create_app(layout: list = None, theme=themes.StandardTheme, assets_folder: str = None):
     """
     Create an dashy app
 
@@ -32,19 +33,16 @@ def create_app(layout: list = None, theme=theme.StandardTheme, assets_folder: st
         layout = lb.demo_layout()
 
     if assets_folder is None:
-        assets_folder = cfg.ASSETS_PATH
+        assets_folder = str(cfg.ASSETS_PATH)
 
     app = DashyApp(
-        theme=theme, 
-        name=__name__, 
+        theme=theme,
+        layout=layout,
+        name=__name__,
         assets_url_path=assets_folder,
         external_scripts=cfg.EXTERNAL_SCRIPTS,
-        external_stylesheets=cfg.EXTERNAL_STYLESHEETS,
+        external_stylesheets=cfg.EXTERNAL_STYLESHEETS
     )
-
-    app.layout = html.Div(layout)
-    global APP
-    APP = app
 
     return app
 
@@ -53,12 +51,19 @@ class DashyApp(dash.Dash):
     """
     Small wrapper class for dash.Dash class
     """
-    def __init__(self, theme, **kwargs):
+    def __init__(self, theme, layout: list, **kwargs):
         super(DashyApp, self).__init__(**kwargs)
 
-        self.theme = theme()
+        if isinstance(theme, str):
+            if theme == 'torchboard':
+                self.theme = themes.TorchBoardTheme()
+                layout.insert(0, cp.header('TorchBoard', logo=str(cfg.ASSETS_PATH / 'pytorch-logo-150px.png')))
+        else:
+            self.theme = theme()
 
         self.hidden_div_count = 0
+
+        self.layout = html.Div(layout)
 
     def run(self, debug=False, **kwargs):
 
@@ -120,7 +125,9 @@ class DashyApp(dash.Dash):
             # Create real Dash callback
             @self.callback(output=Output(output_id, output_element), inputs=input_list, state=state_list)
             def dash_update(*args, **kwargs):
-                return func(*args, **kwargs)
+                components = func(*args, **kwargs)
+                components = self.apply_theme(components)
+                return components
 
             # For completeness
             wraps(func)
@@ -129,3 +136,37 @@ class DashyApp(dash.Dash):
             return wrapper
 
         return decorator_callback
+
+    def apply_theme(self, components):
+        """
+        Recursively apply theme to components
+
+        Args:
+            components: list of components
+
+        Returns:
+            components or None
+        """
+        if components is None:
+            return
+
+        for comp in components:
+            if isinstance(comp, dcc.Graph):
+                # Add theme colors to layout
+                comp.figure.layout.paper_bgcolor = self.theme.background_color
+                comp.figure.layout.plot_bgcolor = self.theme.background_color
+                comp.figure.layout.font['color'] = self.theme.white
+                comp.figure.layout.xaxis['color'] = self.theme.white
+                comp.figure.layout.xaxis['gridcolor'] = self.theme.main_color
+                comp.figure.layout.xaxis['linecolor'] = self.theme.main_color
+                comp.figure.layout.yaxis['color'] = self.theme.white
+                comp.figure.layout.yaxis['gridcolor'] = self.theme.main_color
+                comp.figure.layout.yaxis['linecolor'] = self.theme.main_color
+
+                for d in comp.figure.data:
+                    if isinstance(d, go.Scatter):
+                        if d.mode == 'lines':
+                            d.line['color'] = self.theme.graph_main_color
+            else:
+                self.apply_theme(comp.children)
+        return components

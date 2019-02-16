@@ -2,54 +2,77 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', serif;
-  background-color: $background_color; }
+  color: $font_color;
+  background-color: $background_color;
+}
+
+.logo {
+  display: block;
+  max-width: 40px;
+  max-height: 40px;
+  width: auto;
+  height: auto;
+  margin-right: 10px;
+  margin-top: 10px;
+}
 
 .header {
+  display: flex;
   background-color: $main_color;
-  height: 70px;
-  line-height: 70px;
-  color: white;
+  height: 60px;
+  line-height: 60px;
+  color: $font_color;
   padding-left: 2%;
   padding-right: 2%;
-  font-size: 26px; }
+  font-size: 26px;
+}
 
 /* Layout */
 .main-container {
   display: flex;
   flex-direction: column;
-  margin: 20px; }
+  margin: 20px;
+}
 
 .container {
   flex: 1;
   display: flex;
-  background-color: white; }
+  background-color: $background_color;
+}
 
 .curved {
-  border-radius: 5px; }
+  border-radius: 5px;
+}
 
 .align-center {
-  justify-content: center; }
+  justify-content: center;
+}
 
 .align-left {
-  justify-content: left; }
+  justify-content: left;
+}
 
 .row {
-  flex-direction: row; }
+  flex-direction: row;
+}
 
 .col {
-  flex-direction: column; }
+  flex-direction: column;
+}
 
 /* UI components */
 .tabs {
-  border-bottom: 1px solid #d6d6d6; }
+  border-bottom: 1px solid #d6d6d6;
+}
 
 .tab {
   color: gray;
   background-color: #fafbfc !important;
   border-top: 3px solid transparent !important;
-  border-left: 0px !important;
-  border-right: 0px !important;
-  border-bottom: 0px !important; }
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+}
 
 .tab--selected {
   color: black;
@@ -58,7 +81,8 @@ body {
   border-left: 1px solid lightgrey !important;
   border-right: 1px solid lightgrey !important;
   border-top: 3px solid #00E676 !important;
-  border-bottom: 1px solid #d6d6d6 !important; }
+  border-bottom: 1px solid #d6d6d6 !important;
+}
 
 .std-button {
   background-color: $main_color;
@@ -67,7 +91,9 @@ body {
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
-  border-radius: 5px; }
+  border-radius: 5px;
+}
 
 .std-button:hover {
-  background-color: $accent_color; }
+  background-color: $accent_color;
+}

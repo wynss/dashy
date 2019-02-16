@@ -7,12 +7,13 @@ import plotly.graph_objs as go
 #   Static UI components
 # ----------------------------------------------------------
 def header(title: str, logo: str = None) -> html.Div:
+
     t = html.Div(title, className='item')
     children = [t]
 
     if logo is not None:
-        img = html.Img(src=logo)
-        children.append(img)
+        img = html.Img(src=logo, className='logo')
+        children.insert(0, img)
 
     h = html.Div(children, className='header')
     return h
@@ -164,7 +165,7 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go
 
     kwargs = {
         'figure': figure,
-        'className': 'container curved p10 m10'
+        'className': 'container mt10 mb10'
     }
 
     if id is not None:
@@ -178,6 +179,31 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go
     kwargs['style'] = style
 
     return dcc.Graph(**kwargs)
+
+
+# ----------------------------------------------------------
+#   Control Flow
+# ----------------------------------------------------------
+def interval(id, interval, n_intervals):
+    """
+    Creates an interval components that will be triggered each 'interval' milliseconds
+
+    Args:
+        id: Id of the component
+        interval: How often the components will trigger, in milliseconds
+        n_intervals: Initial start value for number of triggers
+
+    Returns:
+        dcc.Interval component
+    """
+    return dcc.Interval(id=id, interval=interval, n_intervals=n_intervals)
+
+
+# ----------------------------------------------------------
+#   Basic html components
+# ----------------------------------------------------------
+def div(id, **kwargs):
+    return html.Div(id=id, **kwargs)
 
 
 # ----------------------------------------------------------

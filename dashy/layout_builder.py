@@ -65,5 +65,5 @@ def wrap(components: list, direction: str = 'row'):
             css_classes.remove('curved')
         c.className = ' '.join(css_classes)
 
-    css_class = f'container curved {direction} m10 p10'
+    css_class = f'container curved {direction}'
     return html.Div(components, className=css_class)

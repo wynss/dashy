@@ -51,6 +51,14 @@
     margin: 10px;
 }
 
+.mt10 {
+    margin-top: 10px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
 .p3 {
     padding: 3px;
 }

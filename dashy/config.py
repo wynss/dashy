@@ -1,7 +1,8 @@
-import os
+from pathlib import Path
 
 
-ASSETS_PATH = '/Users/toniaxelsson/code/projects/dashy/dashy/assets'
+dashy_dir = Path(__file__).parent
+ASSETS_PATH = dashy_dir / 'assets'
 
 
 EXTERNAL_STYLESHEETS = [

@@ -5,7 +5,7 @@ import numpy as np
 import dashy as dy
 import dashy.components as cp
 import dashy.layout_builder as lb
-from dashy import theme
+from dashy import themes
 
 
 x = np.arange(10)
@@ -22,7 +22,7 @@ layout = [
     ])
 ]
 
-app = dy.create_app(layout=layout, theme=theme.StandardTheme)
+app = dy.create_app(layout=layout, theme=themes.StandardTheme)
 
 
 @dy.callback(('line-plot', 'data'), 'button')
