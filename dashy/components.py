@@ -102,6 +102,10 @@ def radio_buttons(labels: list, title: str = None, id: str = None, initial_label
     return dcc.RadioItems(**kwargs)
 
 
+def slider(id=None, min=0.0, max=1.0, step=0.01, value=0.0):
+    return html.Div(dcc.Slider(id=id, min=min, max=max, step=step, value=value, vertical=True), className='container curved m10 p10')
+
+
 def dropdown(title: str, id: str = None, labels: list = None, initial_label=None, placeholder: str = None,
              clearable=True, searchable=False):
 

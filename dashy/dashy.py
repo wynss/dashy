@@ -167,6 +167,6 @@ class DashyApp(dash.Dash):
                     if isinstance(d, go.Scatter):
                         if d.mode == 'lines':
                             d.line['color'] = self.theme.graph_main_color
-            else:
+            elif hasattr(comp, 'children'):
                 self.apply_theme(comp.children)
         return components
