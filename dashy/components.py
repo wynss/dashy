@@ -1,5 +1,6 @@
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_table as dt
 import plotly.graph_objs as go
 
 
@@ -139,6 +140,12 @@ def dropdown(title: str, id: str = None, labels: list = None, initial_label=None
     return html.Div([title_div, dd], className='container col m10 p10')
 
 
+def table(id, columns, data=None, style_cell=None, style_table=None):
+    table = dt.DataTable(id=id, columns=columns, data=data,
+                         style_cell=style_cell, style_table=style_table)
+    return html.Div([table], className='container col mt10 mb10')
+
+
 # ----------------------------------------------------------
 #   Graphs
 # ----------------------------------------------------------
@@ -188,7 +195,7 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go
 # ----------------------------------------------------------
 #   Control Flow
 # ----------------------------------------------------------
-def interval(id, interval, n_intervals):
+def interval(id, interval, n_intervals=0):
     """
     Creates an interval components that will be triggered each 'interval' milliseconds
 
