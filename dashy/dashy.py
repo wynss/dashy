@@ -39,7 +39,7 @@ def create_app(layout: list = None, theme=themes.StandardTheme, assets_folder: s
         theme=theme,
         layout=layout,
         name=__name__,
-        assets_url_path=assets_folder,
+        assets_folder=assets_folder,
         external_scripts=cfg.EXTERNAL_SCRIPTS,
         external_stylesheets=cfg.EXTERNAL_STYLESHEETS
     )
