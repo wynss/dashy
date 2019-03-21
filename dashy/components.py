@@ -67,9 +67,10 @@ def code(src: str, id: str = None, tight=False):
 # ----------------------------------------------------------
 #   UI components
 # ----------------------------------------------------------
-def button(title: str, id: str = None, font_size: int = 14):
+def button(title: str, id: str = None, font_size: int = 14, n_clicks=None):
 
     kwargs = {
+        'n_clicks': n_clicks,
         'className': f'std-button s{font_size}'
     }
 

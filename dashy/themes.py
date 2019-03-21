@@ -28,6 +28,7 @@ class Theme(metaclass=ThemeMeta):
         sass_src = (
             f'$main_color: {self.main_color};\n'
             f'$background_color: {self.background_color};\n'
+            f'$container_background_color: {self.container_background};\n'
             f'$accent_color: {self.accent_color};\n'
             f'$font_color: {self.font_color};\n' + sass_src
         )
@@ -43,7 +44,7 @@ class StandardTheme(Theme):
         # Colors
         self.main_color = '#2A3F5F'
         self.background_color = '#e5e8e6'
-        self.container_background = '#FFFFF'
+        self.container_background = '#FFFFFF'
         self.accent_color = '#00E676'
         self.font_color = '#FFFFFF'
 
@@ -55,7 +56,7 @@ class DarkTheme(Theme):
         # Colors
         self.main_color = '#262D32'
         self.background_color = '#323C44'
-        self.container_background = '#FFFFF'
+        self.container_background = '#FFFFFF'
         self.accent_color = '#5DBBAE'
         self.font_color = '#FFFFFF'
 
@@ -67,7 +68,7 @@ class TorchBoardTheme(Theme):
         # Colors
         self.main_color = '#262D32'
         self.background_color = '#323C44'
-        self.container_background = '#FFFFF'
+        self.container_background = '#FFFFFF'
         self.accent_color = '#5DBBAE'
         self.font_color = '#E0E0E0'
         self.graph_main_color = '#EE5136'
