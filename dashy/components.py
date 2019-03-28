@@ -141,9 +141,9 @@ def dropdown(title: str, id: str = None, labels: list = None, initial_label=None
     return html.Div([title_div, dd], className='container col m10 p10')
 
 
-def table(id, columns, data=None, style_cell=None, style_table=None):
+def table(id, columns, data=None, style_cell=None, style_table=None, **kwargs):
     table = dt.DataTable(id=id, columns=columns, data=data,
-                         style_cell=style_cell, style_table=style_table)
+                         style_cell=style_cell, style_table=style_table, **kwargs)
     return html.Div([table], className='container col mt10 mb10')
 
 
