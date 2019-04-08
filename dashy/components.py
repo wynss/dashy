@@ -225,7 +225,7 @@ def _options_from_labels(labels):
     options = []
     for l in labels:
         if not isinstance(l, str):
-            raise ValueError('Labels must be strings')
+            raise ValueError(f'Labels must be strings was {type(l)}')
         options.append({'label': l, 'value': _value_from_label(l)})
     return options
 
