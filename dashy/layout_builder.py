@@ -35,7 +35,7 @@ def demo_layout():
 
 def row(components: list):
     """
-    Helper for wrapping components into a colum. See doc for function 'wrap'.
+    Helper for wrapping components into a column. See doc for function 'wrap'.
     """
     return wrap(components, direction='row')
 
@@ -65,5 +65,5 @@ def wrap(components: list, direction: str = 'row'):
             css_classes.remove('curved')
         c.className = ' '.join(css_classes)
 
-    css_class = f'container curved {direction}'
+    css_class = f'container curved {direction} m10 p10'
     return html.Div(components, className=css_class)
