@@ -80,7 +80,7 @@ def button(title: str, id: str = None, font_size: int = 14, n_clicks=None):
     return html.Div(html.Button(title, **kwargs), className='container curved m10 p10')
 
 
-def radio_buttons(labels: list, title: str = None, id: str = None, initial_label=None):
+def radio_buttons(labels: list, id: str = None, initial_label=None):
 
     options = _options_from_labels(labels)
 
@@ -104,16 +104,36 @@ def radio_buttons(labels: list, title: str = None, id: str = None, initial_label
     return dcc.RadioItems(**kwargs)
 
 
+def checkboxes(labels: list, id: str = None, active_labels: list = None):
+
+    options = _options_from_labels(labels)
+    kwargs = {
+        'options': options,
+        'className': 'container curved m10 p10'
+    }
+    if id is not None:
+        kwargs['id'] = id
+
+    if active_labels is not None:
+        if all(l in labels for l in active_labels):
+            kwargs['values'] = active_labels if active_labels is not None else []
+        else:
+            raise ValueError('Active labels does not match labels')
+    return dcc.Checklist(**kwargs)
+
+
 def slider(id=None, min=0.0, max=1.0, step=0.01, value=0.0):
-    return html.Div(dcc.Slider(id=id, min=min, max=max, step=step, value=value, vertical=True), className='container curved m10 p10')
+    return html.Div(dcc.Slider(id=id, min=min, max=max, step=step, value=value, vertical=True),
+                    className='container curved m10 p10')
 
 
 def dropdown(title: str, id: str = None, labels: list = None, initial_label=None, placeholder: str = None,
-             clearable=True, searchable=False):
+             clearable=True, searchable=False, multi=False):
 
     kwargs = {
         'clearable': clearable,
-        'searchable': searchable
+        'searchable': searchable,
+        'multi': multi
     }
 
     if labels is not None:
