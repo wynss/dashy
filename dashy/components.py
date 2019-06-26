@@ -116,9 +116,11 @@ def checkboxes(labels: list, id: str = None, active_labels: list = None):
 
     if active_labels is not None:
         if all(l in labels for l in active_labels):
-            kwargs['values'] = active_labels if active_labels is not None else []
+            kwargs['values'] = active_labels
         else:
             raise ValueError('Active labels does not match labels')
+    else:
+        kwargs['values'] = []
     return dcc.Checklist(**kwargs)
 
 
