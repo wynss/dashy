@@ -172,15 +172,18 @@ def table(id, columns, data=None, style_cell=None, style_table=None, **kwargs):
 # ----------------------------------------------------------
 #   Graphs
 # ----------------------------------------------------------
-def scatter(x=None, y=None, title: str = None, id: str = None, figure: go.Figure = None, height: int = None):
-    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers', figure=figure, height=height)
+def scatter(x=None, y=None, title: str = None, id: str = None, figure: go.Figure = None, height: int = None,
+            loading_state: bool = False):
+    return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='markers', figure=figure, height=height,
+                               loading_state=loading_state)
 
 
 def line(x=None, y=None, title: str = None, id: str = None, figure: go.Figure = None, height: int = None):
     return _line_scatter_graph(id=id, x=x, y=y, title=title, mode='lines', figure=figure, height=height)
 
 
-def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go.Figure = None) -> dcc.Graph:
+def _line_scatter_graph(id, x, y, title: str, mode: str, height: int,
+                        loading_state: bool, figure: go.Figure = None) -> dcc.Graph:
 
     # Create data list
     if x is None or y is None:
@@ -199,7 +202,7 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go
 
     kwargs = {
         'figure': figure,
-        'className': 'container mt10 mb10'
+        'className': 'container mt0 mb0'
     }
 
     if id is not None:
@@ -211,8 +214,12 @@ def _line_scatter_graph(id, x, y, title: str, mode: str, height: int, figure: go
         style['height'] = f'{height}px'
     
     kwargs['style'] = style
+    graph = dcc.Graph(**kwargs)
 
-    return dcc.Graph(**kwargs)
+    if loading_state:
+        graph = add_loading_state(graph)
+
+    return graph
 
 
 # ----------------------------------------------------------
@@ -254,3 +261,19 @@ def _options_from_labels(labels):
 
 def _value_from_label(label):
     return label.lower().replace(' ', '-').replace('/', '-')
+
+
+def add_loading_state(components):
+    kwargs = {'type': 'circle', 'className': 'container m0'}
+
+    style = {'justify-content': 'center', 'align-items': 'center'}
+    if isinstance(components, list):
+        height = max([c.style['height'] for c in components if 'height' in c.style])
+        if height is not None:
+            style['height'] = height
+    else:
+        if 'height' in components.style:
+            style['height'] = components.style['height']
+
+    kwargs['style'] = style
+    return dcc.Loading(children=components, **kwargs)

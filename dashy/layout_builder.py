@@ -1,5 +1,6 @@
 import numpy as np
 import dash_html_components as html
+import dash_core_components as dcc
 
 from dashy import components as cp
 
@@ -33,21 +34,21 @@ def demo_layout():
     return layout
 
 
-def row(components: list):
+def row(components: list, loading_state: bool = False):
     """
     Helper for wrapping components into a column. See doc for function 'wrap'.
     """
-    return wrap(components, direction='row')
+    return wrap(components, direction='row', loading_state=loading_state)
 
 
-def col(components: list):
+def col(components: list, loading_state: bool = False):
     """
     Helper for wrapping components into a row. See doc for function 'wrap'.
     """
-    return wrap(components, direction='col')
+    return wrap(components, direction='col', loading_state=loading_state)
 
 
-def wrap(components: list, direction: str = 'row'):
+def wrap(components: list, direction: str = 'row', loading_state: bool = False):
     """
     Wraps components together either in a row or in a column.
     The returned component is a flexbox container containing the passed
@@ -56,14 +57,24 @@ def wrap(components: list, direction: str = 'row'):
     Args:
         components: List with components to wrap
         direction: Wrap to a row or column
+        loading_state: If the container should react to loading states of its child components
     """
 
-    for c in components:
-        # remove container class
-        css_classes = c.className.split(' ')
-        if 'curved' in css_classes:
-            css_classes.remove('curved')
-        c.className = ' '.join(css_classes)
+    _remove_container_class(components)
+
+    if loading_state:
+        components = cp.add_loading_state(components)
 
     css_class = f'container curved {direction} m10 p10'
     return html.Div(components, className=css_class)
+
+
+def _remove_container_class(components):
+    for c in components:
+        if isinstance(c, dcc.Loading):
+            _remove_container_class(c.children)
+        else:
+            css_classes = c.className.split(' ')
+            if 'curved' in css_classes:
+                css_classes.remove('curved')
+            c.className = ' '.join(css_classes)

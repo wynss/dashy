@@ -7,7 +7,7 @@ ASSETS_PATH = dashy_dir / 'assets'
 
 EXTERNAL_STYLESHEETS = [
     {
-        'href': "https://fonts.googleapis.com/css?family=Open+Sans", 
+        'href': "https://fonts.googleapis.com/css?family=Rubik",
         'rel': "stylesheet"
     }
 ]

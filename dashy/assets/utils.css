@@ -47,6 +47,18 @@
     font-size: 30px
 }
 
+.m0 {
+    margin: 0;
+}
+
+.m1 {
+    margin: 1px;
+}
+
+.m2 {
+    margin: 2px;
+}
+
 .m3 {
     margin: 3px;
 }
@@ -59,8 +71,16 @@
     margin: 10px;
 }
 
+.mt0 {
+    margin-top: 0;
+}
+
 .mt10 {
     margin-top: 10px;
+}
+
+.mb0 {
+    margin-bottom: 0;
 }
 
 .mb10 {
