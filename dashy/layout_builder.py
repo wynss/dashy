@@ -62,11 +62,11 @@ def wrap(components: list, direction: str = 'row', loading_state: bool = False):
 
     _remove_container_class(components)
 
-    if loading_state:
-        components = cp.add_loading_state(components)
-
     css_class = f'container curved {direction} m10 p10'
-    return html.Div(components, className=css_class)
+    div = html.Div(components, className=css_class)
+    if loading_state:
+        div = cp.add_loading_state(div)
+    return div
 
 
 def _remove_container_class(components):

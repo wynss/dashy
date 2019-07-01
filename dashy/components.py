@@ -268,12 +268,18 @@ def add_loading_state(components):
 
     style = {'justify-content': 'center', 'align-items': 'center'}
     if isinstance(components, list):
-        height = max([c.style['height'] for c in components if 'height' in c.style])
-        if height is not None:
+        height = 0
+        for c in components:
+            if hasattr(c, 'style'):
+                if 'height' in c.style:
+                    if c.style['height'] > height:
+                        height = c.style['height']
+        if height > 0:
             style['height'] = height
     else:
-        if 'height' in components.style:
-            style['height'] = components.style['height']
+        if hasattr(components, 'style'):
+            if 'height' in components.style:
+                style['height'] = components.style['height']
 
     kwargs['style'] = style
     return dcc.Loading(children=components, **kwargs)
