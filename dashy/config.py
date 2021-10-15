@@ -1,15 +1,12 @@
 from pathlib import Path
 
+import dash_bootstrap_components as dbc
 
-dashy_dir = Path(__file__).parent
-ASSETS_PATH = dashy_dir / 'assets'
-
+DASHY_DIR = Path(__file__).parent
+ASSETS_PATH = DASHY_DIR / 'assets'
 
 EXTERNAL_STYLESHEETS = [
-    {
-        'href': "https://fonts.googleapis.com/css?family=Rubik",
-        'rel': "stylesheet"
-    }
+    dbc.themes.FLATLY
 ]
 
 EXTERNAL_SCRIPTS = []

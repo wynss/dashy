@@ -2,26 +2,25 @@ import logging
 from functools import wraps
 
 import dash
+from dash import callback_context
 from dash.dependencies import Output, Input, State
-import dash_core_components as dcc
-import dash_html_components as html
 import plotly.graph_objs as go
 
 from dashy import config as cfg
-from dashy import layout_builder as lb
-from dashy import components as cp
 from dashy import themes
+from dashy import components as cp
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_app(layout: list = None, theme=themes.StandardTheme, assets_folder: str = None):
+def create_app(name: str, layout: list = None, theme=themes.StandardTheme, assets_folder: str = None, **kwargs):
     """
     Create an dashy app
 
     Args:
+        name: Name of the app
         layout: UI layout to be display by the app
         theme: UI Theme to be used
         assets_folder: Path to all assets files to be used
@@ -29,19 +28,12 @@ def create_app(layout: list = None, theme=themes.StandardTheme, assets_folder: s
         A DashyApp object
     """
 
-    if layout is None:
-        layout = lb.demo_layout()
-
-    if assets_folder is None:
-        assets_folder = str(cfg.ASSETS_PATH)
-
     app = DashyApp(
         theme=theme,
         layout=layout,
-        name=__name__,
-        assets_folder=assets_folder,
-        external_scripts=cfg.EXTERNAL_SCRIPTS,
-        external_stylesheets=cfg.EXTERNAL_STYLESHEETS
+        name=name,
+        assets_folder=cfg.ASSETS_PATH,
+        **kwargs
     )
 
     return app
@@ -52,41 +44,44 @@ class DashyApp(dash.Dash):
     Small wrapper class for dash.Dash class
     """
     def __init__(self, theme, layout: list, **kwargs):
-        super(DashyApp, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
-        if isinstance(theme, str):
-            if theme == 'torchboard':
-                self.theme = themes.TorchBoardTheme()
-                layout.insert(0, cp.header('TorchBoard', logo=str(cfg.ASSETS_PATH / 'pytorch-logo-150px.png')))
-        else:
-            self.theme = theme()
-
+        self.theme = theme()
         self.hidden_div_count = 0
-
-        self.layout = html.Div(layout)
+        self.layout = cp.html.Div(layout)
 
     def run(self, debug=False, **kwargs):
 
         # Generate css files for theme
-        self.theme.compile()
+        #self.theme.compile()
 
         # Start server
         self.run_server(debug=debug, **kwargs)
 
-    def bind(self, inputs, output=None, states=None):
+    def bind(self, inputs, outputs=None, states=None):
 
         # Handle outputs
-        if output is None:
+        if outputs is None:
             self.hidden_div_count += 1
             output_id = f'auto-hidden-{self.hidden_div_count}'
             output_element = 'children'
-            self.layout.children.append(html.Div(id=output_id, style={'display': 'none'}))
-        else:
-            if not isinstance(output, tuple):
-                raise ValueError("'output' needs to be a tuple")
-            if not len(output) == 2:
-                raise ValueError('output must contain exactly 2 strings')
-            output_id, output_element = output
+            self.layout.children.append(cp.html.Div(id=output_id, style={'display': 'none'}))
+            outputs = [(output_id, output_element)]
+        elif not isinstance(outputs, tuple) and not isinstance(outputs, list):
+            raise ValueError("'inputs' needs to be a tuple or a list of tuples")
+        elif isinstance(outputs, tuple):
+            outputs = [outputs]
+
+        output_list = []
+        for o in outputs:
+            if not isinstance(o, tuple):
+                raise ValueError(f'an input must be tuple was: {type(o)}')
+            if len(o) != 2:
+                raise ValueError('an input must contain exactly 2 strings')
+            output_id, output_element = o
+            output_list.append(Output(output_id, output_element))
+        if len(output_list) == 1:
+            output_list = output_list[0]
 
         # Handle inputs
         if not isinstance(inputs, tuple) and not isinstance(inputs, list):
@@ -97,9 +92,9 @@ class DashyApp(dash.Dash):
         input_list = []
         for i in inputs:
             if not isinstance(i, tuple):
-                raise ValueError(f'a state must be tuple was: {type(i)}')
+                raise ValueError(f'an input must be tuple was: {type(i)}')
             if len(i) != 2:
-                raise ValueError('a state must contain exactly 2 strings')
+                raise ValueError('an input must contain exactly 2 strings')
 
             input_id, input_element = i
             input_list.append(Input(input_id, input_element))
@@ -123,7 +118,7 @@ class DashyApp(dash.Dash):
 
         def decorator_callback(func):
             # Create real Dash callback
-            @self.callback(output=Output(output_id, output_element), inputs=input_list, state=state_list)
+            @self.callback(output=output_list, inputs=input_list, state=state_list)
             def dash_update(*args, **kwargs):
                 components = func(*args, **kwargs)
                 components = self.apply_theme(components)
@@ -150,23 +145,42 @@ class DashyApp(dash.Dash):
         if components is None:
             return
 
-        for comp in components:
-            if isinstance(comp, dcc.Graph):
-                # Add theme colors to layout
-                comp.figure.layout.paper_bgcolor = self.theme.background_color
-                comp.figure.layout.plot_bgcolor = self.theme.background_color
-                comp.figure.layout.font['color'] = self.theme.white
-                comp.figure.layout.xaxis['color'] = self.theme.white
-                comp.figure.layout.xaxis['gridcolor'] = self.theme.main_color
-                comp.figure.layout.xaxis['linecolor'] = self.theme.main_color
-                comp.figure.layout.yaxis['color'] = self.theme.white
-                comp.figure.layout.yaxis['gridcolor'] = self.theme.main_color
-                comp.figure.layout.yaxis['linecolor'] = self.theme.main_color
+        if isinstance(components, go.Figure):
+            self._apply_to_figure(components)
 
-                for d in comp.figure.data:
-                    if isinstance(d, go.Scatter):
-                        if d.mode == 'lines':
-                            d.line['color'] = self.theme.graph_main_color
-            elif hasattr(comp, 'children'):
-                self.apply_theme(comp.children)
+        if isinstance(components, (list, tuple)):
+            for comp in components:
+                if isinstance(comp, cp.dcc.Graph):
+                    # Add theme colors to layout
+                    self._apply_to_figure(comp.figure)
+                if isinstance(comp, go.Figure):
+                    self._apply_to_figure(comp)
+
+                elif hasattr(comp, 'children'):
+                    self.apply_theme(comp.children)
         return components
+
+    def _apply_to_figure(self, figure):
+        figure.layout.paper_bgcolor = self.theme.white
+        figure.layout.plot_bgcolor = self.theme.white
+
+        figure.layout.font['color'] = self.theme.black
+
+        figure.layout.xaxis['zerolinecolor'] = self.theme.background_color
+        figure.layout.yaxis['zerolinecolor'] = self.theme.background_color
+
+        figure.layout.xaxis['gridcolor'] = self.theme.background_color
+        figure.layout.yaxis['gridcolor'] = self.theme.background_color
+
+        margin = figure.layout.margin
+        default_margin = {
+            'l': margin.l if margin.l is not None else 40,
+            'r': margin.r if margin.r is not None else 40,
+            'b': margin.b if margin.b is not None else 40,
+            't': margin.t if margin.t is not None else 70,
+            'pad': margin.pad if margin.pad is not None else 0}
+        figure.layout.margin = default_margin
+
+        title_text = figure.layout.title['text']
+        if title_text is not None:
+            figure.layout.title = dict(text=title_text, x=0.5, y=1.0, pad=dict(t=30), font=dict(size=18))

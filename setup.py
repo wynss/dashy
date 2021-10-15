@@ -8,12 +8,9 @@ setup(
     author_email='some.person@email.com',
     packages=find_packages(),
     install_requires=[
-        'dash >= 0.35.0',
-        'dash-core-components >= 0.42.0',
-        'dash-html-components >= 0.13.4',
-        'dash-renderer >= 0.16.1',
-        'plotly >= 3.4.2',
-        'libsass >= 0.17.0'
+        'dash >= 1.1.1',
+        'dash-bootstrap-components >= 0.7.0',
+        'libsass >= 0.19.2'
     ],
     include_package_data=True
 )
