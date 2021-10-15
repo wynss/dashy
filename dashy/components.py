@@ -1,11 +1,9 @@
 from typing import List, Union, Optional
 
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 import dash_bootstrap_components as dbc
 
-import dash_table as dt
-import plotly.graph_objs as go
 
 PLOT_COLORS = [
     '#2A3F5F',
@@ -32,19 +30,22 @@ def navbar(title: str, fluid=True, color='primary', dark=False, buttons: List[st
     return dbc.NavbarSimple(children, brand=title, fluid=fluid, dark=dark, color=color)
 
 
-def tabs(labels: List[str], id: str = None, tab_ids: List[str] = None, active_tab=None, content_id=None):
-    if id is None:
-        id = 'tabs'
+def tabs(labels: List[str], id: str, content_id: Optional[str],
+         tab_ids: List[str] = None, active_tab: Optional[Union[str, int]] = None) -> dbc.Container:
 
     if tab_ids is None:
-        tab_ids = [l.lower().replace(' ', '-') for l in labels]
+        tab_ids = [label.lower().replace(' ', '-') for label in labels]
 
     tab_element_kwargs = {
-        'children': [dbc.Tab(label=label, tab_id=tab_id) for label, tab_id in zip(labels, tab_ids)],
+        'children': [
+            dbc.Tab(label=label, tab_id=tab_id) for label, tab_id in zip(labels, tab_ids)
+        ],
         'id': id,
     }
 
     if active_tab is not None:
+        if isinstance(active_tab, int):
+            active_tab = tab_ids[active_tab]
         tab_element_kwargs['active_tab'] = active_tab
 
     tab_element = dbc.Tabs(**tab_element_kwargs)
@@ -52,7 +53,7 @@ def tabs(labels: List[str], id: str = None, tab_ids: List[str] = None, active_ta
     if content_id is None:
         content_id = 'tab-content'
 
-    return container([tab_element, container(id=content_id, fluid=True)], fluid=True)
+    return container(id='tab-container', children=[tab_element, container(id=content_id, fluid=True)], fluid=True)
 
 
 def modal(header, id: str, body_layout=None, footer_layout=None, size='lg', scrollable=True):
@@ -237,13 +238,6 @@ def spinner(spinner_comp_id: str, size='lg'):
         ), className='m-1', style={'justify-content': 'flex-start'})
 
 
-def table(id, columns, data=None, style_cell=None, style_table=None, **kwargs):
-    raise NotImplementedError()
-    table = dt.DataTable(id=id, columns=columns, data=data,
-                         style_cell=style_cell, style_table=style_table, **kwargs)
-    return html.Div([table], className='container col m10 m10')
-
-
 def progress(id: str):
     return dbc.Progress(id=id)
 
@@ -285,7 +279,7 @@ def col(children: list, margin=1, padding=0, **kwargs):
     return dbc.Col(children, **kwargs)
 
 
-def div(children: list = None, id: str = None, hidden: bool = False):
+def div(children: Optional[Union[list, str, int, float]] = None, id: str = None, hidden: bool = False):
     kwargs = {k: v for k, v in locals().items() if v is not None}
     return html.Div(**kwargs)
 

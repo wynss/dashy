@@ -2,11 +2,10 @@ import logging
 from functools import wraps
 
 import dash
-from dash import callback_context
 from dash.dependencies import Output, Input, State
 import plotly.graph_objs as go
+import dash_bootstrap_components as dbc
 
-from dashy import config as cfg
 from dashy import themes
 from dashy import components as cp
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_app(name: str, layout: list = None, theme=themes.StandardTheme, assets_folder: str = None, **kwargs):
+def create_app(name: str, layout: list = None, theme=themes.StandardTheme, **kwargs):
     """
     Create an dashy app
 
@@ -23,16 +22,15 @@ def create_app(name: str, layout: list = None, theme=themes.StandardTheme, asset
         name: Name of the app
         layout: UI layout to be display by the app
         theme: UI Theme to be used
-        assets_folder: Path to all assets files to be used
     Returns:
-        A DashyApp object
+        A DashyApp
     """
 
     app = DashyApp(
         theme=theme,
         layout=layout,
         name=name,
-        assets_folder=cfg.ASSETS_PATH,
+        external_stylesheets=[dbc.themes.SUPERHERO],
         **kwargs
     )
 
@@ -53,7 +51,7 @@ class DashyApp(dash.Dash):
     def run(self, debug=False, **kwargs):
 
         # Generate css files for theme
-        #self.theme.compile()
+        # self.theme.compile()
 
         # Start server
         self.run_server(debug=debug, **kwargs)

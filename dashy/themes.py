@@ -1,5 +1,3 @@
-import os
-
 import sass
 
 from dashy.utils import PROJECT_ROOT
