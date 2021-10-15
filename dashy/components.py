@@ -1,9 +1,8 @@
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Any
 
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
-
 
 PLOT_COLORS = [
     '#2A3F5F',
@@ -32,7 +31,6 @@ def navbar(title: str, fluid=True, color='primary', dark=False, buttons: List[st
 
 def tabs(labels: List[str], id: str, content_id: Optional[str],
          tab_ids: List[str] = None, active_tab: Optional[Union[str, int]] = None) -> dbc.Container:
-
     if tab_ids is None:
         tab_ids = [label.lower().replace(' ', '-') for label in labels]
 
@@ -58,26 +56,57 @@ def tabs(labels: List[str], id: str, content_id: Optional[str],
 
 def modal(header, id: str, body_layout=None, footer_layout=None, size='lg', scrollable=True):
     return dbc.Modal([
-        dbc.ModalHeader(header, id=id+'-header'),
-        dbc.ModalBody(body_layout, id=id+'-body'),
-        dbc.ModalFooter(footer_layout, id=id+'-footer')
+        dbc.ModalHeader(header, id=id + '-header'),
+        dbc.ModalBody(body_layout, id=id + '-body'),
+        dbc.ModalFooter(footer_layout, id=id + '-footer')
     ], id=id, size=size, scrollable=scrollable)
 
 
-def button(name: str, id: str = None, className=DEFAULT_MARGIN, color='primary', spinner_div_id=None, n_clicks=0,
-           **kwargs):
-    if id is None:
-        id = _value_from_label(name) + '-button'
-    kwargs['id'] = id
+def button(name: str, id: str, className=DEFAULT_MARGIN, color='primary', spinner_div_id=None, n_clicks=0,
+           pop_type: Optional[str] = None, pop_header: Optional[str] = None,
+           pop_body: Any = None, pop_place: str = None):
+    kwargs = {
+        'id': id,
+        'color': color,
+        'n_clicks': n_clicks,
+        'active': 0,
+        'className': className,
+    }
 
+    # handle spinner
     if spinner_div_id:
-        return dbc.Button(
-            [dbc.Spinner(hidden_div(spinner_div_id), size="sm", spinner_style={'margin': '3px'}), name],
-            className='m-1 d-flex', style={'flex-wrap': 'nowrap'},
-            color=color, n_clicks=n_clicks, **kwargs
-        )
+        kwargs['children'] = [
+            dbc.Spinner(hidden_div(spinner_div_id), size="sm",
+                        spinner_style={'margin': '3px'}),
+            name,
+        ]
+    else:
+        kwargs['children'] = name
 
-    return dbc.Button(name, n_clicks=n_clicks, active=0, color=color, className=className, **kwargs)
+    ret = [dbc.Button(**kwargs)]
+
+    # Handle popover
+    pop_args = (pop_type, pop_body, pop_header)
+    if any(pop is not None for pop in pop_args):
+        if all(pop is not None for pop in pop_args):
+            pop_kwargs = {
+                'children':
+                    [
+                        dbc.PopoverHeader(pop_header),
+                        dbc.PopoverBody(pop_body)
+                    ],
+                'trigger': pop_type,
+                'target': id
+            }
+            if pop_place is not None:
+                pop_kwargs['placement'] = pop_place
+            popover = dbc.Popover(**pop_kwargs)
+            ret.append(popover)
+
+        else:
+            raise ValueError(f"Pass 'pop_type', 'pop_header' and 'pop_body' to use popover for button")
+
+    return div(ret)
 
 
 def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, color='primary'):
@@ -213,8 +242,8 @@ def inputs(titles: Union[str, List[str]], ids: Optional[Union[str, List[str]]] =
 def card(id: str, title: str = None, text: str = None, body_layout: list = None):
     if title is not None and text is not None:
         body_layout = [
-            html.H4(id=id+'-title', children=title, className='card-title'),
-            html.P(id=id+'-text', children=text, className='card-text')
+            html.H4(id=id + '-title', children=title, className='card-title'),
+            html.P(id=id + '-text', children=text, className='card-text')
         ]
     return dbc.Card(
         [

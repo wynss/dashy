@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_app(name: str, layout: list = None, theme=themes.StandardTheme, **kwargs):
+def create_app(name: str, layout: list = None, theme=dbc.themes.FLATLY, **kwargs):
     """
     Create an dashy app
 
@@ -30,7 +30,7 @@ def create_app(name: str, layout: list = None, theme=themes.StandardTheme, **kwa
         theme=theme,
         layout=layout,
         name=name,
-        external_stylesheets=[dbc.themes.SUPERHERO],
+        external_stylesheets=[theme],
         **kwargs
     )
 
@@ -44,7 +44,7 @@ class DashyApp(dash.Dash):
     def __init__(self, theme, layout: list, **kwargs):
         super().__init__(**kwargs)
 
-        self.theme = theme()
+        # self.theme = theme()
         self.hidden_div_count = 0
         self.layout = cp.html.Div(layout)
 
@@ -56,7 +56,7 @@ class DashyApp(dash.Dash):
         # Start server
         self.run_server(debug=debug, **kwargs)
 
-    def bind(self, inputs, outputs=None, states=None):
+    def cb(self, inputs, outputs=None, states=None):
 
         # Handle outputs
         if outputs is None:

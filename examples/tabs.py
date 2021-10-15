@@ -10,7 +10,7 @@ layout = [
 app = dy.create_app('MyApp', layout=layout)
 
 
-@app.bind(('tabs', 'active_tab'), ('my-content', 'children'))
+@app.cb(('tabs', 'active_tab'), ('my-content', 'children'))
 def switch_tabs(tab_id: str):
     return cp.div(f'Hello from {tab_id}')
 
