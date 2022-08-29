@@ -4,17 +4,17 @@ from functools import wraps
 import dash
 from dash.dependencies import Output, Input, State
 import plotly.graph_objs as go
-import dash_bootstrap_components as dbc
+from dash_bootstrap_components import themes
 
-from dashy import themes
 from dashy import components as cp
+
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_app(name: str, layout: list = None, theme=dbc.themes.FLATLY, **kwargs):
+def create_app(name: str, layout: list = None, theme=themes.FLATLY, **kwargs):
     """
     Create an dashy app
 
@@ -23,7 +23,7 @@ def create_app(name: str, layout: list = None, theme=dbc.themes.FLATLY, **kwargs
         layout: UI layout to be display by the app
         theme: UI Theme to be used
     Returns:
-        A DashyApp
+        DashyApp
     """
 
     app = DashyApp(
@@ -44,19 +44,22 @@ class DashyApp(dash.Dash):
     def __init__(self, theme, layout: list, **kwargs):
         super().__init__(**kwargs)
 
-        # self.theme = theme()
+        #self.theme = theme()
         self.hidden_div_count = 0
         self.layout = cp.html.Div(layout)
 
-    def run(self, debug=False, **kwargs):
+    def run_app(self, debug=False, **kwargs):
 
         # Generate css files for theme
-        # self.theme.compile()
+        #self.theme.compile()
 
         # Start server
         self.run_server(debug=debug, **kwargs)
 
     def cb(self, inputs, outputs=None, states=None):
+        """
+        wrapper function for the original Dash callback function. This in order to make it more flexible and also take away some limitations.
+        """
 
         # Handle outputs
         if outputs is None:

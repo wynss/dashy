@@ -1,11 +1,11 @@
 import dashy.dashy as dy
-import dashy.components as cp
+import dashy.components as dc
 
 
 layout = [
-    cp.navbar('Hello Tabs!', dark=True),
-    cp.button('Hover over me!', id='my-btn', pop_type='hover',
-              pop_header='Pop pop', pop_body='pop message', pop_place='bottom')
+    dc.navbar('Hello Tabs!', dark=True),
+    dc.button('Hover over me!', id='my-btn', popover_trigger='hover',
+              popover_header='Pop pop', popover_body='pop message', popover_placement='bottom')
 ]
 
 app = dy.create_app('MyApp', layout=layout)

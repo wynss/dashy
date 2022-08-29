@@ -1,12 +1,12 @@
 from time import sleep
 
 import dashy.dashy as dy
-import dashy.components as cp
+import dashy.components as dc
 
 
 layout = [
-    cp.navbar('Hello Spinners!', dark=True, color='secondary'),
-    cp.button('Spin me!', id='my-btn', spinner_div_id='spinner')
+    dc.navbar('Hello Spinners!', dark=True, color='secondary'),
+    dc.button('Spin me!', id='my-btn', spinner_div_id='spinner')
 ]
 
 app = dy.create_app('MyApp', layout=layout, theme=dy.dbc.themes.SUPERHERO)
