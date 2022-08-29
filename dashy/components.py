@@ -1,8 +1,11 @@
+from enum import Enum
 from typing import List, Union, Optional, Any
 
 from dash import html
 from dash import dcc
+from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
+from plotly.graph_objects import Figure
 
 PLOT_COLORS = [
     '#2A3F5F',
@@ -17,20 +20,68 @@ PLOT_COLORS = [
 DEFAULT_MARGIN = 'm-1'
 
 
+class Size(Enum):
+    SM = 'sm'
+    MD = 'md'
+    LG = 'lg'
+
+    @staticmethod
+    def class_name() -> str:
+        return 'size'
+
+
+class Placement(Enum):
+    AUTO = 'auto'
+    AUTO_START = 'auto-start'
+    AUTO_END = 'auto-end'
+    TOP = 'top'
+    TOP_START = 'top-start'
+    TOP_END = 'top-end'
+    RIGHT = 'right'
+    RIGHT_START = 'right-start'
+    RIGHT_END = 'right-end'
+    BOTTOM = 'bottom'
+    BOTTOM_START = 'bottom-start'
+    BOTTOM_END = 'bottom-end'
+    LEFT = 'left'
+    LEFT_START = 'left-start'
+    LEFT_END = 'left-end'
+
+    @staticmethod
+    def class_name() -> str:
+        return 'placement'
+
+
+class Trigger(Enum):
+    HOVER = 'hover'
+    CLICK = 'click'
+    FOCUS = 'focus'
+    LEGACY = 'legacy'
+
+    @staticmethod
+    def class_name() -> str:
+        return 'trigger'
+
+
 # ----------------------------------------------------------
 #   UI components
 # ----------------------------------------------------------
 def navbar(title: str, fluid=True, color='primary', dark=False, buttons: List[str] = None) -> dbc.NavbarSimple:
     children = []
-
     if buttons is not None:
         for b in buttons:
             children.append(dbc.NavItem(dbc.NavLink(b, id=_value_from_label(b))))
+
     return dbc.NavbarSimple(children, brand=title, fluid=fluid, dark=dark, color=color)
 
 
-def tabs(labels: List[str], id: str, content_id: Optional[str],
-         tab_ids: List[str] = None, active_tab: Optional[Union[str, int]] = None) -> dbc.Container:
+def tabs(
+    labels: List[str],
+    id: str,
+    content_id: Optional[str],
+    tab_ids: Optional[List[str]] = None,
+    active_tab: Optional[Union[str, int]] = None
+) -> dbc.Container:
     if tab_ids is None:
         tab_ids = [label.lower().replace(' ', '-') for label in labels]
 
@@ -62,51 +113,84 @@ def modal(header, id: str, body_layout=None, footer_layout=None, size='lg', scro
     ], id=id, size=size, scrollable=scrollable)
 
 
-def button(name: str, id: str, className=DEFAULT_MARGIN, color='primary', spinner_div_id=None, n_clicks=0,
-           pop_type: Optional[str] = None, pop_header: Optional[str] = None,
-           pop_body: Any = None, pop_place: str = None):
-    kwargs = {
+def button(
+        text: str,
+        id: str,
+        color: str = 'primary',
+        spinner_div_id: Optional[str] = None,
+        n_clicks: int = 0,
+        popover_header: Optional[str] = None,
+        popover_body: Any = None,
+        popover_trigger: Trigger = Trigger.HOVER,
+        popover_placement: Placement = Placement.RIGHT,
+        popover_delay: Optional[dict[str, int] | int] = None
+) -> html:
+    """ A Button
+
+    Args:
+        text (str): Text that will be shown on the button
+        id (str): Id of the button
+        color (str, optional): Color of the button. Defaults to 'primary'.
+        spinner_div_id (_type_, optional): The div that will control when the spinner is shown. Defaults to None.
+        n_clicks (int, optional): Number of times the button has been clicked. Defaults to 0.
+        popover_header (Optional[str], optional): Popover header. Defaults to None.
+        popover_body (Any, optional): Popover body. Defaults to None.
+        popover_trigger (Optional[str], optional): Type of popover. Defaults to None.
+        popover_placement (str, optional): Popover placement. Defaults to None.
+        popover_delay: Delay for showing/hiding the popover.
+
+    Raises:
+        ValueError: If not all pop over values are passed
+
+    Returns:
+        Div element containing the button and its elements
+    """
+
+    kwargs: dict[str, Any] = {
         'id': id,
         'color': color,
         'n_clicks': n_clicks,
         'active': 0,
-        'className': className,
     }
 
     # handle spinner
     if spinner_div_id:
-        kwargs['children'] = [
-            dbc.Spinner(hidden_div(spinner_div_id), size="sm",
-                        spinner_style={'margin': '3px'}),
-            name,
-        ]
+        kwargs['children'] = row([
+            col(text, margin=0),
+            col(spinner(spinner_div_id, size=Size.SM), margin_left=3),
+        ], margin=0)
     else:
-        kwargs['children'] = name
+        kwargs['children'] = text
 
     ret = [dbc.Button(**kwargs)]
 
     # Handle popover
-    pop_args = (pop_type, pop_body, pop_header)
-    if any(pop is not None for pop in pop_args):
-        if all(pop is not None for pop in pop_args):
-            pop_kwargs = {
-                'children':
-                    [
-                        dbc.PopoverHeader(pop_header),
-                        dbc.PopoverBody(pop_body)
-                    ],
-                'trigger': pop_type,
-                'target': id
-            }
-            if pop_place is not None:
-                pop_kwargs['placement'] = pop_place
-            popover = dbc.Popover(**pop_kwargs)
-            ret.append(popover)
+    if popover_header is not None or popover_body is not None:
+        pop_kwargs = {
+            'children': [
+                dbc.PopoverHeader(popover_header) if popover_header else None,
+                dbc.PopoverBody(popover_body) if popover_body else None
+            ],
+            'target': id,
+            Trigger.class_name(): popover_trigger.value,
+            Placement.class_name(): popover_placement.value,
+        }
 
-        else:
-            raise ValueError(f"Pass 'pop_type', 'pop_header' and 'pop_body' to use popover for button")
+        if popover_delay is not None:
+            if isinstance(popover_delay, int):
+                popover_delay = {'show': popover_delay, 'hide': popover_delay}
+            elif isinstance(popover_delay, dict):
+                if 'hide' not in popover_delay or 'show' not in popover_delay:
+                    raise ValueError("Popover delay dict must contain 'show' and 'hide'.")
+            else:
+                raise ValueError("Popover delay must be a 'dict' or an 'int'.")
 
-    return div(ret)
+            pop_kwargs['delay'] = popover_delay
+
+        popover = dbc.Popover(**pop_kwargs)
+        ret.append(popover)
+
+    return col(ret)
 
 
 def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, color='primary'):
@@ -115,10 +199,15 @@ def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, col
     return dbc.ButtonGroup([button(n, id, className='', color=color) for n, id in zip(names, ids)], id=id)
 
 
-def graph(id: str = None, hide=False, **kwargs):
+def graph(id: str, figure: Optional[Figure] = None, hide=False):
+    kwargs = {}
+    if figure is not None:
+        kwargs['figure'] = figure
+
     parent_style = {'align-self': 'stretch'}
     if hide:
         parent_style['display'] = 'none'
+
     return dbc.Col(children=dcc.Graph(id=id, **kwargs), style=parent_style, id=id + '-parent')
 
 
@@ -245,26 +334,19 @@ def card(id: str, title: str = None, text: str = None, body_layout: list = None)
             html.H4(id=id + '-title', children=title, className='card-title'),
             html.P(id=id + '-text', children=text, className='card-text')
         ]
-    return dbc.Card(
-        [
-            dbc.CardBody(body_layout)
-        ],
-        id=id
-    )
+    return col(dbc.Card([dbc.CardBody(body_layout)], id=id))
 
 
 def date_range_picker(id: str, clearable: bool = False):
     return dcc.DatePickerRange(id=id, clearable=clearable, className='d-flex align-self-center')
 
 
-def spinner(spinner_comp_id: str, size='lg'):
-    return dbc.Col(
-        dbc.Spinner(
-            hidden_div(spinner_comp_id),
-            size=size,
-            color='#293E4F',
-            spinner_style={'margin': '4px'}
-        ), className='m-1', style={'justify-content': 'flex-start'})
+def spinner(spinner_comp_id: str, size: Size):
+    return dbc.Spinner(
+        children=hidden_div(spinner_comp_id),
+        size=size.value,
+        spinner_class_name="flex-shrink-0"
+    )
 
 
 def progress(id: str):
@@ -274,37 +356,55 @@ def progress(id: str):
 # ----------------------------------------------------------
 #   Layout components
 # ----------------------------------------------------------
-def container(children: list = None, id: str = None, fluid: bool = True, **kwargs):
-    return dbc.Container(children, id=id, fluid=fluid, className='p-0', **kwargs)
+def container(children: list = None, fluid: bool = True, **kwargs):
+    return dbc.Container(children, fluid=fluid, **kwargs)
 
 
-def row(children, margin=1, padding=0, **kwargs):
-    if 'className' not in kwargs:
-        kwargs['className'] = f'm-{margin} p-{padding} d-flex align-items-end'
-    else:
-        classname = kwargs['className']
-        if 'm-' not in classname:
-            classname = f'm-{margin} ' + classname
-        if 'p-' not in classname:
-            classname = f'p-{padding} ' + classname
-        kwargs['className'] = classname
-    if 'style' not in kwargs:
-        kwargs['style'] = {'flex-wrap': 'nowrap'}
-
+def row(
+    children: Union[list, str, Component],
+    margin: int = 1,
+    margin_right: int = None,
+    margin_left: int = None,
+    margin_top: int = None,
+    margin_bottom: int = None,
+    padding: int = 0, 
+    padding_right: int = None,
+    padding_left: int = None,
+    padding_top: int = None,
+    padding_bottom: int = None,
+    **kwargs
+) -> dbc.Row:
+    kwargs = {
+        'className': (
+            f'{_get_margin(margin, margin_top, margin_bottom, margin_left, margin_right)} '
+            f'{_get_padding(padding, padding_top, padding_bottom, padding_left, padding_right)} '
+            f'row-auto d-flex align-items-center'
+        )
+    }
     return dbc.Row(children, **kwargs)
 
 
-def col(children: list, margin=1, padding=0, **kwargs):
-    if 'className' not in kwargs:
-        kwargs['className'] = f'm-{margin} p-{padding}'
-    else:
-        classname = kwargs['className']
-        if 'm-' not in classname:
-            classname = f'm-{margin} ' + classname
-        if 'p-' not in classname:
-            classname = f'p-{padding} ' + classname
-        kwargs['className'] = classname
-
+def col(
+    children: Union[list, str, Component],
+    margin: int = 1,
+    margin_right: Optional[int] = None,
+    margin_left: Optional[int] = None,
+    margin_top: Optional[int] = None,
+    margin_bottom: Optional[int] = None,
+    padding: int = 0, 
+    padding_right: int = None,
+    padding_left: int = None,
+    padding_top: int = None,
+    padding_bottom: int = None,
+    **kwargs
+) -> dbc.Col:
+    kwargs = {
+        'className': (
+            f'{_get_margin(margin, margin_top, margin_bottom, margin_left, margin_right)} '
+            f'{_get_padding(padding, padding_top, padding_bottom, padding_left, padding_right)} '
+            f'col-auto d-flex align-items-center'
+        )
+    }
     return dbc.Col(children, **kwargs)
 
 
@@ -356,3 +456,19 @@ def create_options(labels, values=None):
 
 def _value_from_label(label):
     return label.lower().replace(' ', '-').replace('/', '-')
+
+
+def _get_margin(margin: int, margin_top: int, margin_bottom: int, margin_left: int, margin_right: int) -> str:
+    """
+    Create the bootstrap margin class. If any side is specified
+    """
+    margins = [margin_top, margin_bottom, margin_left, margin_right]
+    return f'm-{margin} ' + ' '.join([f'{k}-{v}' for k, v in zip(['mt', 'mb', 'ms', 'me'], margins) if v is not None])
+
+
+def _get_padding(padding: int, padding_top: int, padding_bottom: int, padding_left: int, padding_right: int) -> str:
+    """
+    Create the bootstrap margin class. If any side is specified
+    """
+    paddings = [padding_top, padding_bottom, padding_left, padding_right]
+    return f'p-{padding} ' + ' '.join([f'{k}-{v}' for k, v in zip(['pt', 'pb', 'ps', 'pe'], paddings) if v is not None])

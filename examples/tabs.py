@@ -7,7 +7,7 @@ layout = [
     cp.tabs(id='tabs', labels=['Tab1', 'Tab2', 'Tab3'], content_id='my-content')
 ]
 
-app = dy.create_app('MyApp', layout=layout)
+app = dy.create_app('MyApp', layout)
 
 
 @app.cb(('tabs', 'active_tab'), ('my-content', 'children'))
@@ -15,4 +15,5 @@ def switch_tabs(tab_id: str):
     return cp.div(f'Hello from {tab_id}')
 
 
-app.run()
+if __name__ == "__main__":
+    app.run_app(debug=True)

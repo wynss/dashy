@@ -8,9 +8,9 @@ setup(
     author_email='some.person@email.com',
     packages=find_packages(),
     install_requires=[
-        'dash >= 1.1.1',
-        'dash-bootstrap-components >= 0.7.0',
-        'libsass >= 0.19.2'
+        'dash >= 2.6.1',
+        'dash-bootstrap-components >= 1.2.1',
+        'libsass >= 0.21.0'
     ],
     include_package_data=True
 )
