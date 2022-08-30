@@ -2,23 +2,20 @@ from time import sleep
 
 import dashy.dashy as dy
 import dashy.components as dc
-import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
+
+
+DF_IRIS = px.data.iris()
+DF_MEDALS = px.data.medals_long()
+DF_GAPMINDER = px.data.gapminder()
+DF_MT_BRUNO = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
 
 
 layout = [
     dc.navbar('Dashy Overview!', dark=True, buttons=['Home', 'Overview', 'Analysis']),
-    dc.tabs(id='tabs', labels=['Plots', 'Buttons', 'Tab3'], content_id='my-content'),
-    dc.container([
-        dc.row([
-            dc.card('my-card-1', "This is a card", "this is some text"),
-            dc.card('my-card-2', "This is a card", "this is some text")
-        ]),
-        dc.col([
-            dc.card('my-card-3', "This is a card", "this is some text"),
-            dc.card('my-card-4', "This is a card", "this is some text")
-        ])
-    ])
+    dc.tabs(id='tabs', labels=['Plots', 'UI Components', 'Tab3'], content_id='my-content')
 ]
 
 app = dy.create_app('MyApp', layout, theme=dy.themes.COSMO, suppress_callback_exceptions=True)
@@ -30,11 +27,13 @@ def switch_tabs(tab_id: str):
         case 'plots':
             return dc.container([
                 dc.row([
-                    dc.graph("my-graph-1", figure=px.line(y=np.arange(10))), 
-                    dc.graph("my-graph-2", figure=px.scatter(y=2*np.linspace(-10, 10, 100)**2 + 1))
-                ], margin=0)
+                    dc.graph("my-graph-1", figure=px.scatter(DF_IRIS, x="sepal_width", y="sepal_length", color="species", size='petal_length', hover_data=['petal_width']), height=500), 
+                    dc.graph("my-graph-2", figure=px.bar(DF_MEDALS, x="medal", y="count", color="nation", text="nation"))
+                ], margin=0),
+                dc.row(dc.graph("my-graph-3", height=800, figure=px.scatter(DF_GAPMINDER.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country", log_x=True, size_max=60))),
+                dc.row(dc.graph("my-graph-4", height=800, figure=go.Figure(data=[go.Surface(z=DF_MT_BRUNO.values)], layout=go.Layout(title='Mt Bruno Elevation'))))
             ])
-        case 'buttons':
+        case 'ui-components':
             return dc.container([
                 dc.row([
                     dc.button(text="Button", id='btn-1'),
@@ -46,10 +45,21 @@ def switch_tabs(tab_id: str):
                 ], margin=0),
                 dc.row([
                     dc.dropdown('Dropdown', width=300),
-                    dc.checklist(id='checklist', header="Some checks", labels=['Check 1', 'Check 2', 'Check 3'], initial='Check 1'),
+                    dc.checks(id='checklist', header="Some checks", labels=['Check 1', 'Check 2', 'Check 3'], initial='Check 1'),
+                    dc.checks(id='toggles', header="Some Toggles", labels=['Toggle 1', 'Toggle 2', 'Toggle 3'], initial=['Toggle 1', 'Toggle 2'], toggles=True),
                     dc.radios(id='radios', header="Some Radios", labels=['Radio 1', 'Radio 2', 'Radio 3']),
-                    dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Input 1', 'Input 2', 'Input 3'], input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.RANGE])
-                ], margin=0)
+                ], margin=0),
+                dc.row([
+                    dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Text', 'Number', 'Password'], input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD])
+                ], margin=0),
+                dc.row([
+                    dc.card('my-card-1', "This is a card", "We are horizontal"),
+                    dc.card('my-card-2', "This is a card", "We are horizontal")
+                ]),
+                dc.col([
+                    dc.card('my-card-3', "This is a card", "We are vertical"),
+                    dc.card('my-card-4', "This is a card", "We are vertical")
+                ])
             ], margin=0)
         case _:
             return dc.div(f'Hello from {tab_id}')

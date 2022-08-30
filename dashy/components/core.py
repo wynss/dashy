@@ -159,27 +159,45 @@ def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, col
     return dbc.ButtonGroup([button(n, id, className='', color=color.value) for n, id in zip(names, ids)], id=id)
 
 
-def graph(id: str, figure: Optional[Figure] = None, hide=False) -> Component:
+def graph(
+    id: str, 
+    figure: Optional[Figure] = None, 
+    responsive: Union[str, bool] = True,
+    animate: bool = False,
+    mathjax: bool = False,
+    hide: bool = False,
+    height: Optional[int] = None
+) -> Component:
     """A Graph
 
     Args:
         id (str): Id of the graph
         figure (Optional[Figure], optional): Plotly figure. Defaults to None.
+        responsive: Is the grapth including the plotly figure should be responsive
+        animate: if the transitions should be animated using plotlys animate function.
+        mathjax: If mathjax should be loaded and used.
         hide (bool, optional): If the graph should be hidden. Defaults to False.
+        height: Height of the graph
 
     Returns:
         Component containing the graph
     """
     kwargs = {}
     if figure is not None:
+        # center title
+        figure.update_layout(dict(title={'x': 0.5}))
         kwargs['figure'] = figure
 
     parent_style = {'align-self': 'stretch'}
+
+    if height is not None:
+        parent_style['height'] = f'{height}px'
+
     if hide:
         parent_style['display'] = 'none'
 
     return col(children=[
-        dcc.Graph(id=id, **kwargs, className="align-self-stretch")
+        dcc.Graph(id=id, **kwargs, className="w-100 h-100", animate=animate, responsive=responsive, mathjax=mathjax)
         ], style=parent_style, id=id + '-parent', margin=0, auto_size=False)
 
 
@@ -256,21 +274,86 @@ def dropdown(
     return col(dbc.Form([title_div, dropdown]))
 
 
-def checklist(
+def checks(
     id: str, 
     labels: list, 
     values: list = None, 
-    initial: Optional[Union[str, int]]=None, 
+    initial: Optional[Union[str, int, list[str], list[int]]]  =None, 
     header: Optional[str] = None,
-    inline: bool = True
+    inline: bool = True,
+    toggles: bool = False
 ) -> Component:
+    """Checkboxes
+
+    Args:
+        id (str): Id of the check list
+        labels (list): Labels/Names of the check boxes
+        values (list, optional): Values of hte checkboxes, will be created if not passed. Defaults to None.
+        initial (Optional[Union[str, int]], optional): The initial value(s) for the checkboxes. Defaults to None.
+        header (Optional[str], optional): Header text. Defaults to None.
+        inline (bool, optional): If the checkboxes should be on a row (True) or column (False). Defaults to True.
+        toggles (bool, optional): If the checkboxes chould render as toggles. Defaults to False.
+
+    Returns:
+        Component: Containing the checkboxes
+    """
     options = create_options(labels, values)
     kwargs = {
         'id': id,
         'options': options,
-        'inline': inline
+        'inline': inline,
+        'switch': toggles
     }
 
+    # handle inital values
+    if initial is not None:
+        if not isinstance(initial, list):
+            initial = [initial]
+
+        if all([isinstance(el, str) for el in initial]):
+            kwargs['value'] = [op['value'] for op in options if op['label'] in initial]
+        elif all([isinstance(el, int) for el in initial]):
+            kwargs['value'] = [options[i]['value'] for i in initial]
+        else:
+            raise ValueError("'initial' need to contain all 'str' or all 'int' if passed as a 'list'")
+
+    container_children = []
+    if header is not None:
+        container_children.append(dbc.Label(header))
+    
+    container_children.append(dbc.Checklist(**kwargs))
+    return col(dbc.Form(container_children))
+
+
+def radios(
+    id: str, 
+    labels: list, 
+    values: Optional[list] = None, 
+    initial: Optional[Union[str, int]] = None, 
+    header: Optional[str] = None,
+    inline: bool = True
+) -> Component:
+    """Radio buttons
+
+    Args:
+        id (str): Id of the radio buttons
+        labels (list): Labels/Name of the buttons
+        values (Optional[list], optional): Values of the buttons, will be generate if not passed. Defaults to None.
+        initial (Optional[Union[str, int]], optional): Initial value of the buttons. Defaults to None.
+        header (Optional[str], optional): Header text. Defaults to None.
+        inline (bool, optional): If the buttons should be on a row (True) or column (False). Defaults to True.
+
+    Returns:
+        Component: Containing the radio buttons
+    """
+    options = create_options(labels, values)
+    kwargs = {
+        'id': id,
+        'options': options,
+        'inline': inline,
+    }
+
+    # handle initial value
     if initial is not None:
         if isinstance(initial, int):
             kwargs['value'] = [options[initial]['value']]
@@ -281,25 +364,6 @@ def checklist(
     if header is not None:
         container_children.append(dbc.Label(header))
     
-    container_children.append(dbc.Checklist(**kwargs))
-    return col(dbc.Form(container_children))
-
-
-def radios(id: str, labels: list, values: list = None, initial=None, header: Optional[str] = None):
-    options = create_options(labels, values)
-    kwargs = {
-        'id': id,
-        'options': options,
-        'inline': True,
-    }
-
-    if initial is not None:
-        if isinstance(initial, int):
-            kwargs['value'] = options[initial]['value']
-
-    container_children = []
-    if header is not None:
-        container_children.append(dbc.Label(header))
     container_children.append(dbc.RadioItems(**kwargs))
     return col(dbc.Form(container_children))
 
@@ -307,8 +371,23 @@ def radios(id: str, labels: list, values: list = None, initial=None, header: Opt
 def inputs(
     titles: Union[str, List[str]], 
     ids: Optional[Union[str, List[str]]] = None, 
-    input_type: Union[InputType, list[InputType]] = (InputType.NUMBER,)
+    input_type: Optional[Union[InputType, list[InputType]]] = None,
+    size: Size = Size.MD
 ) -> Component:
+    """An input compnent or a set of input components.
+
+    Args:
+        titles (Union[str, List[str]]): Titles of the inputs
+        ids (Optional[Union[str, List[str]]], optional): Ids of the inputs. Defaults to None.
+        input_type (Union[InputType, list[InputType]], optional): Type for each input. Defaults to InputType.NUMBER.
+        size (Size, optional): Size of the inputs. Defaults to Size.MD.
+
+    Raises:
+        ValueError: If the 'input_type' is a list with different length than 'titles'
+
+    Returns:
+        Component: Containing the input components
+    """
 
     if isinstance(titles, str):
         titles = [titles]
@@ -316,6 +395,8 @@ def inputs(
     if isinstance(input_type, list):
         if len(input_type) != len(titles):
             raise ValueError("Number of 'titles' and specified 'input_type' must the same.")
+    elif input_type is None:
+        input_type = len(titles) * [InputType.NUMBER]
 
     if ids is None:
         ids = [value_from_label(t) + '-input' for t in titles]
@@ -324,19 +405,47 @@ def inputs(
 
     return col(
         row([
-            col(dbc.Form([dbc.Label(t), dbc.Input(id=i, type=it.value)]), margin=1) for i, t, it in zip(ids, titles, input_type)
+            col(dbc.Form([dbc.Label(t), dbc.Input(id=i, type=it.value, size=size.value)]), margin=1) for i, t, it in zip(ids, titles, input_type)
         ], margin=0),
         margin=0
     )
 
 
-def card(id: str, title: str = None, text: str = None, body_layout: list = None):
-    if title is not None and text is not None:
-        body_layout = [
-            html.H4(id=id + '-title', children=title, className='card-title'),
-            html.P(id=id + '-text', children=text, className='card-text')
-        ]
-    return col(dbc.Card([dbc.CardBody(body_layout)], id=id), margin=1)
+def card(
+    id: str, 
+    title: Optional[str] = None, 
+    text: Optional[str] = None, 
+    body_layout: Optional[list] = None, 
+    color: Color = Color.PRIMARY
+) -> Component:
+    """A card
+
+    Args:
+        id (str): Id of the card
+        title (Optional[str], optional): Title of the card. Defaults to None.
+        text (Optional[str], optional): Text of the card. Defaults to None.
+        body_layout (Optional[list], optional): The layout of the card, will override the title and text if passed. Defaults to None.
+        color (Color, optional): _description_. Defaults to Color.PRIMARY.
+
+    Returns:
+        Component: Containing the Card
+    """
+    if body_layout is None:
+        if title is not None and text is not None:
+            body_layout = [
+                html.H4(id=id + '-title', children=title, className='card-title'),
+                html.P(id=id + '-text', children=text, className='card-text')
+            ]
+        else:
+            raise ValueError("Must pass both 'title' and 'text' to card if 'body_layout' is not passed")
+
+    # handle text color
+    if color == Color.LIGHT:
+        inverse = False
+    else:
+        inverse = True
+
+    return col(dbc.Card([dbc.CardBody(body_layout)], id=id, color=color.value, inverse=inverse), margin=1)
 
 
 def date_range_picker(id: str, clearable: bool = False):
@@ -373,8 +482,18 @@ def interval(id: str, interval: int, n_intervals: int = 0, disabled: bool = True
     return dcc.Interval(id=id, interval=interval, n_intervals=n_intervals, disabled=disabled)
 
 
-# ----------------------------------------------------------
-#   Basic html components
-# ----------------------------------------------------------
-def hidden_div(id, children=None):
+def hidden_div(id: str, children: Optional[Any] = None) -> html.Div:
+    """A hidden Div
+
+    This can for example be used for storing some data when some action has been completed.
+
+    In the background these divs are also created when a callback without in output is created.
+
+    Args:
+        id (str): Id of the div
+        children (Optional[Any], optional): Children of the div. Defaults to None.
+
+    Returns:
+        A hidden html.Div
+    """
     return html.Div(children=children, id=id, style={'display': 'none'})
