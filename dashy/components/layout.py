@@ -8,19 +8,19 @@ from .helpers import get_margin_class, get_padding_class
 
 
 def container(
-    children: list = None, 
-    fluid: bool = True, 
-    margin: int = 1,
-    margin_right: int = None,
-    margin_left: int = None,
-    margin_top: int = None,
-    margin_bottom: int = None,
-    padding: int = 0, 
-    padding_right: int = None,
-    padding_left: int = None,
-    padding_top: int = None,
-    padding_bottom: int = None,
-    **kwargs
+        children: list = None,
+        fluid: bool = True,
+        margin: int = 1,
+        margin_right: int = None,
+        margin_left: int = None,
+        margin_top: int = None,
+        margin_bottom: int = None,
+        padding: int = 0,
+        padding_right: int = None,
+        padding_left: int = None,
+        padding_top: int = None,
+        padding_bottom: int = None,
+        **kwargs
 ) -> dbc.Container:
     kwargs = {
         'className': (
@@ -39,7 +39,7 @@ def row(
     margin_left: int = None,
     margin_top: int = None,
     margin_bottom: int = None,
-    padding: int = 0, 
+    padding: int = 0,
     padding_right: int = None,
     padding_left: int = None,
     padding_top: int = None,
@@ -59,19 +59,19 @@ def row(
 
 
 def col(
-    children: Union[list, str, Component],
-    margin: int = 1,
-    margin_right: Optional[int] = None,
-    margin_left: Optional[int] = None,
-    margin_top: Optional[int] = None,
-    margin_bottom: Optional[int] = None,
-    padding: int = 0, 
-    padding_right: int = None,
-    padding_left: int = None,
-    padding_top: int = None,
-    padding_bottom: int = None,
-    auto_size: bool = True,
-    **kwargs
+        children: Union[list, str, Component],
+        margin: int = 1,
+        margin_right: Optional[int] = None,
+        margin_left: Optional[int] = None,
+        margin_top: Optional[int] = None,
+        margin_bottom: Optional[int] = None,
+        padding: int = 0,
+        padding_right: int = None,
+        padding_left: int = None,
+        padding_top: int = None,
+        padding_bottom: int = None,
+        auto_size: bool = True,
+        **kwargs
 ) -> dbc.Col:
     kwargs = {
         'className': (

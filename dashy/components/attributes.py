@@ -43,6 +43,7 @@ class Trigger(Enum):
     def class_name() -> str:
         return 'trigger'
 
+
 class Color(Enum):
     PRIMARY = 'primary'
     SECONDARY = 'secondary'
@@ -52,6 +53,7 @@ class Color(Enum):
     DANGER = 'danger'
     LIGHT = 'light'
     DARK = 'dark'
+
 
 class InputType(Enum):
     NUMBER = 'number'

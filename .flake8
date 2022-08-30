@@ -1,0 +1,20 @@
+[flake8]
+per-file-ignores =
+    __init__.py:
+        # import but unused
+        F401
+        # unable to detect undefined names
+        F403
+    dashy.py:
+        C901
+    core.py:
+        C901
+exclude =
+    venv,
+    .git,
+    __pycache__,
+    .vscode,
+    .idea,
+    dashy.egg-info
+max-complexity = 10
+max-line-length = 127

@@ -44,21 +44,22 @@ class DashyApp(dash.Dash):
     def __init__(self, theme, layout: list, **kwargs):
         super().__init__(**kwargs)
 
-        #self.theme = theme()
+        # self.theme = theme()
         self.hidden_div_count = 0
         self.layout = cp.html.Div(layout)
 
     def run_app(self, debug=False, **kwargs):
 
         # Generate css files for theme
-        #self.theme.compile()
+        # self.theme.compile()
 
         # Start server
         self.run_server(debug=debug, **kwargs)
 
     def cb(self, inputs, outputs=None, states=None):
         """
-        wrapper function for the original Dash callback function. This in order to make it more flexible and also take away some limitations.
+        wrapper function for the original Dash callback function.
+        This in order to make it more flexible and also take away some limitations.
         """
 
         # Handle outputs
@@ -127,6 +128,7 @@ class DashyApp(dash.Dash):
 
             # For completeness
             wraps(func)
+
             def wrapper():
                 return None
             return wrapper
