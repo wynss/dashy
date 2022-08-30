@@ -14,7 +14,7 @@ class Theme:
 
         self.white = '#FFFFFF'
         self.black = '#000000'
-    
+
     def compile(self):
         with open(str(PROJECT_ROOT / 'assets' / 'main.scss'), 'r') as f:
             sass_src = f.read()

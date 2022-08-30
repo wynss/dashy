@@ -6,12 +6,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 
-
 DF_IRIS = px.data.iris()
 DF_MEDALS = px.data.medals_long()
 DF_GAPMINDER = px.data.gapminder()
 DF_MT_BRUNO = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
-
 
 layout = [
     dc.navbar('Dashy Overview!', dark=True, buttons=['Home', 'Overview', 'Analysis']),
@@ -27,11 +25,21 @@ def switch_tabs(tab_id: str):
         case 'plots':
             return dc.container([
                 dc.row([
-                    dc.graph("my-graph-1", figure=px.scatter(DF_IRIS, x="sepal_width", y="sepal_length", color="species", size='petal_length', hover_data=['petal_width']), height=500), 
-                    dc.graph("my-graph-2", figure=px.bar(DF_MEDALS, x="medal", y="count", color="nation", text="nation"))
+                    dc.graph("my-graph-1",
+                             figure=px.scatter(DF_IRIS, x="sepal_width", y="sepal_length", color="species",
+                                               size='petal_length', hover_data=['petal_width']), height=500),
+                    dc.graph("my-graph-2",
+                             figure=px.bar(DF_MEDALS, x="medal", y="count", color="nation", text="nation"))
                 ], margin=0),
-                dc.row(dc.graph("my-graph-3", height=800, figure=px.scatter(DF_GAPMINDER.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country", log_x=True, size_max=60))),
-                dc.row(dc.graph("my-graph-4", height=800, figure=go.Figure(data=[go.Surface(z=DF_MT_BRUNO.values)], layout=go.Layout(title='Mt Bruno Elevation'))))
+                dc.row([
+
+                    dc.graph("my-graph-3", height=800,
+                             figure=px.scatter(DF_GAPMINDER.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop",
+                                               color="continent", hover_name="country", log_x=True, size_max=60)
+                             ),
+                    dc.graph("my-graph-4", height=800, figure=go.Figure(data=[go.Surface(z=DF_MT_BRUNO.values)],
+                                                                        layout=go.Layout(title='Mt Bruno Elevation')))
+                ]),
             ])
         case 'ui-components':
             return dc.container([
@@ -45,12 +53,15 @@ def switch_tabs(tab_id: str):
                 ], margin=0),
                 dc.row([
                     dc.dropdown('Dropdown', width=300),
-                    dc.checks(id='checklist', header="Some checks", labels=['Check 1', 'Check 2', 'Check 3'], initial='Check 1'),
-                    dc.checks(id='toggles', header="Some Toggles", labels=['Toggle 1', 'Toggle 2', 'Toggle 3'], initial=['Toggle 1', 'Toggle 2'], toggles=True),
+                    dc.checks(id='checklist', header="Some checks",
+                              labels=['Check 1', 'Check 2', 'Check 3'], initial='Check 1'),
+                    dc.checks(id='toggles', header="Some Toggles", labels=['Toggle 1', 'Toggle 2', 'Toggle 3'],
+                              initial=['Toggle 1', 'Toggle 2'], toggles=True),
                     dc.radios(id='radios', header="Some Radios", labels=['Radio 1', 'Radio 2', 'Radio 3']),
                 ], margin=0),
                 dc.row([
-                    dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Text', 'Number', 'Password'], input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD])
+                    dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Text', 'Number', 'Password'],
+                              input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD])
                 ], margin=0),
                 dc.row([
                     dc.card('my-card-1', "This is a card", "We are horizontal"),

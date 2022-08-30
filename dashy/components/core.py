@@ -6,17 +6,17 @@ from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
 
-from .attributes import *
+from .attributes import Size, InputType, Color, Trigger, Placement
 from .layout import container, row, col
 from .helpers import value_from_label, create_options
 
 
 def navbar(
-    title: str, 
-    fluid=True, 
-    color: Color = Color.PRIMARY, 
-    dark=False, 
-    buttons: List[str] = None
+        title: str,
+        fluid=True,
+        color: Color = Color.PRIMARY,
+        dark=False,
+        buttons: List[str] = None
 ) -> dbc.NavbarSimple:
     children = []
     if buttons is not None:
@@ -27,11 +27,11 @@ def navbar(
 
 
 def tabs(
-    labels: List[str],
-    id: str,
-    content_id: Optional[str],
-    tab_ids: Optional[List[str]] = None,
-    active_tab: Optional[Union[str, int]] = None
+        labels: List[str],
+        id: str,
+        content_id: Optional[str],
+        tab_ids: Optional[List[str]] = None,
+        active_tab: Optional[Union[str, int]] = None
 ) -> dbc.Container:
     if tab_ids is None:
         tab_ids = [label.lower().replace(' ', '-') for label in labels]
@@ -142,7 +142,8 @@ def button(
     return col(ret)
 
 
-def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, color: Color = Color.PRIMARY) -> dbc.ButtonGroup:
+def button_group(id: str, names: List[str], ids: Optional[List[str]] = None,
+                 color: Color = Color.PRIMARY) -> dbc.ButtonGroup:
     """A group of buttons
 
     Args:
@@ -156,17 +157,17 @@ def button_group(id: str, names: List[str], ids: Optional[List[str]] = None, col
     """
     if ids is None:
         ids = [f'{value_from_label(n)}-button' for n in names]
-    return dbc.ButtonGroup([button(n, id, className='', color=color.value) for n, id in zip(names, ids)], id=id)
+    return dbc.ButtonGroup([button(n, id, color=color.value) for n, id in zip(names, ids)], id=id)
 
 
 def graph(
-    id: str, 
-    figure: Optional[Figure] = None, 
-    responsive: Union[str, bool] = True,
-    animate: bool = False,
-    mathjax: bool = False,
-    hide: bool = False,
-    height: Optional[int] = None
+        id: str,
+        figure: Optional[Figure] = None,
+        responsive: Union[str, bool] = True,
+        animate: bool = False,
+        mathjax: bool = False,
+        hide: bool = False,
+        height: Optional[int] = None
 ) -> Component:
     """A Graph
 
@@ -198,7 +199,7 @@ def graph(
 
     return col(children=[
         dcc.Graph(id=id, **kwargs, className="w-100 h-100", animate=animate, responsive=responsive, mathjax=mathjax)
-        ], style=parent_style, id=id + '-parent', margin=0, auto_size=False)
+    ], style=parent_style, id=id + '-parent', margin=0, auto_size=False)
 
 
 def list_group_heading(text: str, font_size: int = 18):
@@ -216,21 +217,20 @@ def list_group_text(text: str, font_size: int = 14):
 
 
 def dropdown(
-    title: str, 
-    id: str = None, 
-    labels: list = None, 
-    initial_label=None, 
-    values: list = None,
-    options: list = None, 
-    placeholder: str = None, 
-    clearable=True, 
-    searchable=False, 
-    multi=False, 
-    width=None,
-    grow=False, 
-    shrink=False
+        title: str,
+        id: str = None,
+        labels: list = None,
+        initial_label=None,
+        values: list = None,
+        options: list = None,
+        placeholder: str = None,
+        clearable=True,
+        searchable=False,
+        multi=False,
+        width=None,
+        grow=False,
+        shrink=False
 ) -> Component:
-    
     style = {}
     if width is not None:
         style['width'] = width
@@ -275,13 +275,13 @@ def dropdown(
 
 
 def checks(
-    id: str, 
-    labels: list, 
-    values: list = None, 
-    initial: Optional[Union[str, int, list[str], list[int]]]  =None, 
-    header: Optional[str] = None,
-    inline: bool = True,
-    toggles: bool = False
+        id: str,
+        labels: list,
+        values: list = None,
+        initial: Optional[Union[str, int, list[str], list[int]]] = None,
+        header: Optional[str] = None,
+        inline: bool = True,
+        toggles: bool = False
 ) -> Component:
     """Checkboxes
 
@@ -320,18 +320,18 @@ def checks(
     container_children = []
     if header is not None:
         container_children.append(dbc.Label(header))
-    
+
     container_children.append(dbc.Checklist(**kwargs))
     return col(dbc.Form(container_children))
 
 
 def radios(
-    id: str, 
-    labels: list, 
-    values: Optional[list] = None, 
-    initial: Optional[Union[str, int]] = None, 
-    header: Optional[str] = None,
-    inline: bool = True
+        id: str,
+        labels: list,
+        values: Optional[list] = None,
+        initial: Optional[Union[str, int]] = None,
+        header: Optional[str] = None,
+        inline: bool = True
 ) -> Component:
     """Radio buttons
 
@@ -363,16 +363,16 @@ def radios(
     container_children = []
     if header is not None:
         container_children.append(dbc.Label(header))
-    
+
     container_children.append(dbc.RadioItems(**kwargs))
     return col(dbc.Form(container_children))
 
 
 def inputs(
-    titles: Union[str, List[str]], 
-    ids: Optional[Union[str, List[str]]] = None, 
-    input_type: Optional[Union[InputType, list[InputType]]] = None,
-    size: Size = Size.MD
+        titles: Union[str, List[str]],
+        ids: Optional[Union[str, List[str]]] = None,
+        input_type: Optional[Union[InputType, list[InputType]]] = None,
+        size: Size = Size.MD
 ) -> Component:
     """An input compnent or a set of input components.
 
@@ -405,18 +405,20 @@ def inputs(
 
     return col(
         row([
-            col(dbc.Form([dbc.Label(t), dbc.Input(id=i, type=it.value, size=size.value)]), margin=1) for i, t, it in zip(ids, titles, input_type)
+            col(dbc.Form(
+                [dbc.Label(t), dbc.Input(id=i, type=it.value, size=size.value)]
+            ), margin=1) for i, t, it in zip(ids, titles, input_type)
         ], margin=0),
         margin=0
     )
 
 
 def card(
-    id: str, 
-    title: Optional[str] = None, 
-    text: Optional[str] = None, 
-    body_layout: Optional[list] = None, 
-    color: Color = Color.PRIMARY
+        id: str,
+        title: Optional[str] = None,
+        text: Optional[str] = None,
+        body_layout: Optional[list] = None,
+        color: Color = Color.PRIMARY
 ) -> Component:
     """A card
 
@@ -424,7 +426,7 @@ def card(
         id (str): Id of the card
         title (Optional[str], optional): Title of the card. Defaults to None.
         text (Optional[str], optional): Text of the card. Defaults to None.
-        body_layout (Optional[list], optional): The layout of the card, will override the title and text if passed. Defaults to None.
+        body_layout (Optional[list], optional): The layout of the card, will override the title and text if passed.
         color (Color, optional): _description_. Defaults to Color.PRIMARY.
 
     Returns:

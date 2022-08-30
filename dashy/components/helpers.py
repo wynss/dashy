@@ -1,7 +1,7 @@
 
 def create_options(labels, values=None) -> list[dict[str, str]]:
     if values is not None:
-        options = [{'label': l, 'value': v} for l, v in zip(labels, values)]
+        options = [{'label': label, 'value': value} for label, value in zip(labels, values)]
         return options
 
     options = []
