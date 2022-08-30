@@ -489,13 +489,14 @@ def slider(
     """A slider
 
     Args:
-        id: Id of the slider 
-        title: Title that will be displayed above the slider 
+        id: Id of the slider
+        title: Title that will be displayed above the slider
         min: Min value of the slider
         max: Max value of the slider
         step: Step size between min and max range
         value: Initial value. If None 'min' will be used
-        marks: Slider marks. If True marks will be generated. If None no marks will be visible. Can also pass a dict with custom marks
+        marks: Slider marks. If True marks will be generated. If None no marks will be visible.
+               Can also pass a dict with custom marks
         update_mode: How the value of the slider should be updated.
         tooltip: If True a tooltip will be shown.
         tooltip_placement: Placement of the tooltip.

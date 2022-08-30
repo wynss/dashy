@@ -63,7 +63,8 @@ def switch_tabs(tab_id: str):
                     dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Text', 'Number', 'Password'],
                               input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD]),
                     dc.slider('my-slider', title="A slider", min=0, max=10, step=1,),
-                    dc.slider('my-slider', title="A slider with tooltip", min=0, max=100, step=10, tooltip=True, tooltip_always_visible=True)
+                    dc.slider('my-slider', title="A slider with tooltip", min=0, max=100, 
+                              step=10, tooltip=True, tooltip_always_visible=True)
                 ], margin=0),
                 dc.row([
                     dc.card('my-card-1', "This is a primary card", "We are horizontal"),
