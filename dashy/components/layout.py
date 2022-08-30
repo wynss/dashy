@@ -22,6 +22,30 @@ def container(
         padding_bottom: int = None,
         **kwargs
 ) -> dbc.Container:
+    """Container component. Use this to hold rows and cols with components.
+
+    The margin and padding is specified in bootstrap fashion, 0-5. (0 - 3rem)
+
+    Args:
+        children (list, optional): Children of the container. Defaults to None.
+
+        fluid (bool, optional): If True the container-fluid class will be applied, and the Container
+                                will expand to fill available space. Defaults to True.
+
+        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin_right (int, optional): Margin left. Defaults to None.
+        margin_left (int, optional): Margin right. Defaults to None.
+        margin_top (int, optional): Margin top. Defaults to None.
+        margin_bottom (int, optional): Margin bottom. Defaults to None.
+        padding (int, optional): Padding. Defaults to 0.
+        padding_right (int, optional): Padding right. Defaults to None.
+        padding_left (int, optional): Padding left. Defaults to None.
+        padding_top (int, optional): Padding top. Defaults to None.
+        padding_bottom (int, optional): Padding bottom. Defaults to None.
+
+    Returns:
+        dbc.Container
+    """
     kwargs = {
         'className': (
             f'{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} '
@@ -47,6 +71,27 @@ def row(
     auto_size: bool = True,
     **kwargs
 ) -> dbc.Row:
+    """Row component.
+
+    The margin and padding is specified in bootstrap fashion, 0-5. (0 - 3rem)
+
+    Args:
+        children (list, optional): Children of the container. Defaults to None.
+        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin_right (int, optional): Margin left. Defaults to None.
+        margin_left (int, optional): Margin right. Defaults to None.
+        margin_top (int, optional): Margin top. Defaults to None.
+        margin_bottom (int, optional): Margin bottom. Defaults to None.
+        padding (int, optional): Padding. Defaults to 0.
+        padding_right (int, optional): Padding right. Defaults to None.
+        padding_left (int, optional): Padding left. Defaults to None.
+        padding_top (int, optional): Padding top. Defaults to None.
+        padding_bottom (int, optional): Padding bottom. Defaults to None.
+        auto_size (bool): if True the row will make its size fit its content otherwise it will take the space available.
+
+    Returns:
+        dbc.Row
+    """
     kwargs = {
         'className': (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
@@ -73,6 +118,27 @@ def col(
         auto_size: bool = True,
         **kwargs
 ) -> dbc.Col:
+    """Col component.
+
+    The margin and padding is specified in bootstrap fashion, 0-5. (0 - 3rem)
+
+    Args:
+        children (list, optional): Children of the container. Defaults to None.
+        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin_right (int, optional): Margin left. Defaults to None.
+        margin_left (int, optional): Margin right. Defaults to None.
+        margin_top (int, optional): Margin top. Defaults to None.
+        margin_bottom (int, optional): Margin bottom. Defaults to None.
+        padding (int, optional): Padding. Defaults to 0.
+        padding_right (int, optional): Padding right. Defaults to None.
+        padding_left (int, optional): Padding left. Defaults to None.
+        padding_top (int, optional): Padding top. Defaults to None.
+        padding_bottom (int, optional): Padding bottom. Defaults to None.
+        auto_size (bool): if True the col will make its size fit its content otherwise it will take the space available.
+
+    Returns:
+        dbc.Col
+    """
     kwargs = {
         'className': (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
@@ -85,5 +151,6 @@ def col(
 
 
 def div(children: Optional[Union[list, str, int, float]] = None, id: str = None, hidden: bool = False):
+    """Wrapper for html.Div"""
     kwargs = {k: v for k, v in locals().items() if v is not None}
     return html.Div(**kwargs)

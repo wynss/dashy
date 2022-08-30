@@ -12,7 +12,7 @@ DF_GAPMINDER = px.data.gapminder()
 DF_MT_BRUNO = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
 
 layout = [
-    dc.navbar('Dashy Overview!', dark=True, buttons=['Home', 'Overview', 'Analysis']),
+    dc.navbar('Dashy Overview!', dark=True, links=['Home', 'Overview', 'Analysis']),
     dc.tabs(id='tabs', labels=['Plots', 'UI Components', 'Tab3'], content_id='my-content')
 ]
 
