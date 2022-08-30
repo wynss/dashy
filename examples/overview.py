@@ -61,15 +61,17 @@ def switch_tabs(tab_id: str):
                 ], margin=0),
                 dc.row([
                     dc.inputs(ids=['input-1', 'input-2', 'input-3'], titles=['Text', 'Number', 'Password'],
-                              input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD])
+                              input_type=[dc.InputType.TEXT, dc.InputType.NUMBER, dc.InputType.PASSWORD]),
+                    dc.slider('my-slider', title="A slider", min=0, max=10, step=1,),
+                    dc.slider('my-slider', title="A slider with tooltip", min=0, max=100, step=10, tooltip=True, tooltip_always_visible=True)
                 ], margin=0),
                 dc.row([
-                    dc.card('my-card-1', "This is a card", "We are horizontal"),
-                    dc.card('my-card-2', "This is a card", "We are horizontal")
+                    dc.card('my-card-1', "This is a primary card", "We are horizontal"),
+                    dc.card('my-card-2', "This is a warning card", "We are horizontal", color=dc.Color.WARNING)
                 ]),
                 dc.col([
-                    dc.card('my-card-3', "This is a card", "We are vertical"),
-                    dc.card('my-card-4', "This is a card", "We are vertical")
+                    dc.card('my-card-3', "This is a info card", "We are vertical", color=dc.Color.INFO),
+                    dc.card('my-card-4', "This is a light card", "We are vertical", color=dc.Color.LIGHT)
                 ])
             ], margin=0)
         case _:

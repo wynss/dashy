@@ -65,3 +65,8 @@ class InputType(Enum):
     TEL = 'tel'
     URL = 'url'
     HIDDEN = 'hidden'
+
+
+class SliderUpateMode(Enum):
+    DRAG = 'drag'
+    MOUSE_UP = 'mouseup'
