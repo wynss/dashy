@@ -21,7 +21,7 @@ layout = [
     ])
 ]
 
-app = dy.create_app('MyApp', layout, theme=dy.themes.QUARTZ, suppress_callback_exceptions=True)
+app = dy.create_app('MyApp', layout, theme=dy.themes.COSMO, suppress_callback_exceptions=True)
 
 
 @app.cb(('tabs', 'active_tab'), ('my-content', 'children'))
