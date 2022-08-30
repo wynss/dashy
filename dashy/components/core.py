@@ -2,7 +2,6 @@ from typing import List, Union, Optional, Any
 
 from dash import html
 from dash import dcc
-from dash.development.base_component import Component
 import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
 
@@ -16,11 +15,24 @@ def navbar(
         fluid=True,
         color: Color = Color.PRIMARY,
         dark=False,
-        buttons: List[str] = None
+        links: List[str] = None
 ) -> dbc.NavbarSimple:
+    """A Navbar
+
+    Args:
+        title (str): Title of the Navbar
+        fluid (bool, optional): If True the contents of the navbar will fill the available horizontal space. Defaults to True.
+        color (Color, optional): Color of the navbar. Defaults to Color.PRIMARY.
+        dark (bool, optional): If True the text in the children of the Navbar to use light colors for contrast/visibility.
+                               Defaults to False.
+        links (List[str], optional): List of links to add. Defaults to None.
+
+    Returns:
+        NavbarSimple component
+    """
     children = []
-    if buttons is not None:
-        for b in buttons:
+    if links is not None:
+        for b in links:
             children.append(dbc.NavItem(dbc.NavLink(b, id=value_from_label(b))))
 
     return dbc.NavbarSimple(children, brand=title, fluid=fluid, dark=dark, color=color.value)
@@ -33,6 +45,18 @@ def tabs(
         tab_ids: Optional[List[str]] = None,
         active_tab: Optional[Union[str, int]] = None
 ) -> dbc.Container:
+    """Create a set of tabs to navigate between different contents.
+
+    Args:
+        labels (List[str]): Tab labels, the text that will be shown for each tab.
+        id (str): Id of the tabs
+        content_id (Optional[str]): Id of the content element that will be populated when switching tab.
+        tab_ids (Optional[List[str]], optional): Ids for each tab, will be created if not passed. Defaults to None.
+        active_tab (Optional[Union[str, int]], optional): Sets the active tab, by index or label. Defaults to None.
+
+    Returns:
+        dbc.Container: Containing the tabs
+    """
     if tab_ids is None:
         tab_ids = [label.lower().replace(' ', '-') for label in labels]
 
@@ -54,12 +78,32 @@ def tabs(
     return container(id='tab-container', children=[tab_element, container(id=content_id, fluid=True)], fluid=True)
 
 
-def modal(header, id: str, body_layout=None, footer_layout=None, size='lg', scrollable=True):
+def modal(
+    header: str,
+    id: str,
+    body_layout: Optional[Any] = None,
+    footer_layout: Optional[Any] = None,
+    size: Size = Size.LG,
+    scrollable: bool = True
+) -> dbc.Modal:
+    """Modal component.
+
+    Args:
+        header (str): Header for the modal
+        id (str): Id of the modal
+        body_layout (Optional[Any], optional): Body layout. Defaults to None.
+        footer_layout (Optional[Any], optional): Footer layout. Defaults to None.
+        size (Size, optional): Size of the modal. Defaults to Size.LG.
+        scrollable (bool, optional): If True the modal will be able to scroll. Defaults to True.
+
+    Returns:
+        Modal component
+    """
     return dbc.Modal([
         dbc.ModalHeader(header, id=id + '-header'),
         dbc.ModalBody(body_layout, id=id + '-body'),
         dbc.ModalFooter(footer_layout, id=id + '-footer')
-    ], id=id, size=size, scrollable=scrollable)
+    ], id=id, size=size.value, scrollable=scrollable)
 
 
 def button(
@@ -73,7 +117,7 @@ def button(
         popover_trigger: Trigger = Trigger.HOVER,
         popover_placement: Placement = Placement.TOP,
         popover_delay: Optional[dict[str, int] | int] = None
-) -> html:
+) -> dbc.Col:
     """ A Button
 
     Args:
@@ -92,7 +136,7 @@ def button(
         ValueError: If not all pop over values are passed
 
     Returns:
-        Div element containing the button and its elements
+        Component containing the button
     """
 
     kwargs: dict[str, Any] = {
@@ -142,8 +186,12 @@ def button(
     return col(ret)
 
 
-def button_group(id: str, names: List[str], ids: Optional[List[str]] = None,
-                 color: Color = Color.PRIMARY) -> dbc.ButtonGroup:
+def button_group(
+    id: str,
+    names: List[str],
+    ids: Optional[List[str]] = None,
+    color: Color = Color.PRIMARY
+) -> dbc.ButtonGroup:
     """A group of buttons
 
     Args:
@@ -168,17 +216,17 @@ def graph(
         mathjax: bool = False,
         hide: bool = False,
         height: Optional[int] = None
-) -> Component:
+) -> dbc.Col:
     """A Graph
 
     Args:
         id (str): Id of the graph
         figure (Optional[Figure], optional): Plotly figure. Defaults to None.
-        responsive: Is the grapth including the plotly figure should be responsive
-        animate: if the transitions should be animated using plotlys animate function.
-        mathjax: If mathjax should be loaded and used.
+        responsive: If True the grapth including the plotly figure will be responsive.
+        animate: If the transitions should be animated using plotly.js animate function.
+        mathjax: If mathjax should be loaded and used for equations.
         hide (bool, optional): If the graph should be hidden. Defaults to False.
-        height: Height of the graph
+        height: Height of the graph.
 
     Returns:
         Component containing the graph
@@ -202,20 +250,6 @@ def graph(
     ], style=parent_style, id=id + '-parent', margin=0, auto_size=False)
 
 
-def list_group_heading(text: str, font_size: int = 18):
-    style = {}
-    if font_size:
-        style['font-size'] = font_size
-    return dbc.ListGroupItemHeading(text, style=style)
-
-
-def list_group_text(text: str, font_size: int = 14):
-    style = {}
-    if font_size:
-        style['font-size'] = font_size
-    return dbc.ListGroupItemText(text, style=style)
-
-
 def dropdown(
         title: str,
         id: str = None,
@@ -230,7 +264,31 @@ def dropdown(
         width=None,
         grow=False,
         shrink=False
-) -> Component:
+) -> dbc.Col:
+    """A Dropdown.
+
+    Args:
+        title (str): Title of the dropdown that will be displayed
+        id (str, optional): Id of the dropdown. Defaults to None.
+        labels (list, optional): Labels of the dropdown elements. Defaults to None.
+        initial_label (_type_, optional): Inital label that will be selected. Defaults to None.
+        values (list, optional): Values of the dropdown elements. Defaults to None.
+        options (list, optional): Options for the dropdown. Defaults to None.
+        placeholder (str, optional): Placeholder text. Defaults to None.
+        clearable (bool, optional): If True the dropdown will be able to have nothing selected. Defaults to True.
+        searchable (bool, optional): If True the dropdown will be searchable. Defaults to False.
+        multi (bool, optional): If True the dropdown will be able to select multiple elements. Defaults to False.
+        width (_type_, optional): Width of the dropdown in pixels. Defaults to None.
+        grow (bool, optional): If the dropdown should be able to grow. Defaults to False.
+        shrink (bool, optional): If the dropdown should be able to shrink. Defaults to False.
+
+    Raises:
+        ValueError: If 'options' and 'labels'/'values' are passed. Only one can be passed
+        ValueError: If the initial label does not exists in 'options' or 'labels'.
+
+    Returns:
+        Component containing the dropdown
+    """
     style = {}
     if width is not None:
         style['width'] = width
@@ -282,7 +340,7 @@ def checks(
         header: Optional[str] = None,
         inline: bool = True,
         toggles: bool = False
-) -> Component:
+) -> dbc.Col:
     """Checkboxes
 
     Args:
@@ -295,7 +353,7 @@ def checks(
         toggles (bool, optional): If the checkboxes chould render as toggles. Defaults to False.
 
     Returns:
-        Component: Containing the checkboxes
+        Component containing the checkboxes
     """
     options = create_options(labels, values)
     kwargs = {
@@ -332,7 +390,7 @@ def radios(
         initial: Optional[Union[str, int]] = None,
         header: Optional[str] = None,
         inline: bool = True
-) -> Component:
+) -> dbc.Col:
     """Radio buttons
 
     Args:
@@ -344,7 +402,7 @@ def radios(
         inline (bool, optional): If the buttons should be on a row (True) or column (False). Defaults to True.
 
     Returns:
-        Component: Containing the radio buttons
+        Component containing the radio buttons
     """
     options = create_options(labels, values)
     kwargs = {
@@ -373,7 +431,7 @@ def inputs(
         ids: Optional[Union[str, List[str]]] = None,
         input_type: Optional[Union[InputType, list[InputType]]] = None,
         size: Size = Size.MD
-) -> Component:
+) -> dbc.Col:
     """An input compnent or a set of input components.
 
     Args:
@@ -386,7 +444,7 @@ def inputs(
         ValueError: If the 'input_type' is a list with different length than 'titles'
 
     Returns:
-        Component: Containing the input components
+        Component containing the input components
     """
 
     if isinstance(titles, str):
@@ -419,7 +477,7 @@ def card(
         text: Optional[str] = None,
         body_layout: Optional[list] = None,
         color: Color = Color.PRIMARY
-) -> Component:
+) -> dbc.Col:
     """A card
 
     Args:
@@ -430,7 +488,7 @@ def card(
         color (Color, optional): _description_. Defaults to Color.PRIMARY.
 
     Returns:
-        Component: Containing the Card
+        Component containing the Card
     """
     if body_layout is None:
         if title is not None and text is not None:
@@ -450,11 +508,29 @@ def card(
     return col(dbc.Card([dbc.CardBody(body_layout)], id=id, color=color.value, inverse=inverse), margin=1)
 
 
-def date_range_picker(id: str, clearable: bool = False):
+def date_range_picker(id: str, clearable: bool = False) -> dcc.DatePickerRange:
+    """A date range picker component. Used to select a date.
+
+    Args:
+        id (str): Id of the date picker.
+        clearable (bool, optional): If True the date picker will be able to have nothing selected. Defaults to False.
+
+    Returns:
+        dcc.DatePickerRange
+    """
     return dcc.DatePickerRange(id=id, clearable=clearable, className='d-flex align-self-center')
 
 
-def spinner(spinner_comp_id: str, size: Size):
+def spinner(spinner_comp_id: str, size: Size) -> dbc.Spinner:
+    """A Spinner. Can be used to indicate that something is loading
+
+    Args:
+        spinner_comp_id (str): The id of the component that will trigger the spinner.
+        size (Size): Size of the sponner
+
+    Returns:
+        dbc.Spinner
+    """
     return dbc.Spinner(
         children=hidden_div(spinner_comp_id),
         size=size.value,
@@ -462,14 +538,19 @@ def spinner(spinner_comp_id: str, size: Size):
     )
 
 
-def progress(id: str):
+def progress(id: str) -> dbc.Progress:
+    """A progress bar component.
+
+    Args:
+        id (str): Id of the progress bar
+
+    Returns:
+        dbc.Progress
+    """
     return dbc.Progress(id=id)
 
 
-# ----------------------------------------------------------
-#   Control Flow
-# ----------------------------------------------------------
-def interval(id: str, interval: int, n_intervals: int = 0, disabled: bool = True):
+def interval(id: str, interval: int, n_intervals: int = 0, disabled: bool = True) -> dcc.Interval:
     """
     Creates an interval components that will be triggered each 'interval' milliseconds
 
