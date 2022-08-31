@@ -123,7 +123,7 @@ class DashyApp(dash.Dash):
             @self.callback(output=output_list, inputs=input_list, state=state_list)
             def dash_update(*args, **kwargs):
                 components = func(*args, **kwargs)
-                components = self.apply_theme(components)
+                # components = self.apply_theme(components)
                 return components
 
             # For completeness
