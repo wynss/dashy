@@ -3,8 +3,8 @@ from functools import wraps
 
 import dash
 from dash.dependencies import Output, Input, State
-import plotly.graph_objs as go
 from dash_bootstrap_components import themes
+import plotly.graph_objs as go
 
 from dashy import components as cp
 
