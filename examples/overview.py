@@ -33,31 +33,34 @@ def create_load_files_example(app: dy.DashyApp):
             ('x-values-drop', 'options'),
             ('x-values-drop', 'value'),
             ('y-values-drop', 'options'),
-            ('y-values-drop', 'value')
+            ('y-values-drop', 'value'),
+            ('color-drop', 'options'),
+            ('color-drop', 'value')
         ])
     def update_drops(cols):
         options = [{'label': c['name'], 'value': c['name']} for c in cols]
-        return [options, options[0]['value'], options, options[1]['value']]
+        return [options, options[0]['value'], options, options[1]['value'], options, options[-1]['value']]
 
     # update the graph
     @app.cb(
-        inputs=[('x-values-drop', 'value'), ('y-values-drop', 'value')],
+        inputs=[('x-values-drop', 'value'), ('y-values-drop', 'value'), ('color-drop', 'value')],
         outputs=('load-files-graph', 'figure'),
         states=('csv-upload-table', 'data')
     )
-    def update_graph(x_col, y_col, data):
+    def update_graph(x_col, y_col, color, data):
         if None in [x_col, y_col, data]:
             raise PreventUpdate
         else:
             df = pd.DataFrame.from_records(data)
-            return px.scatter(df, x=x_col, y=y_col)
+            return px.scatter(df, x=x_col, y=y_col, color=color)
 
     layout = dc.container([
+        dc.row(dc.graph(id='load-files-graph', height=500)),
         dc.row([
             dc.dropdown('X-values', placeholder="Select X values", width=300),
-            dc.dropdown('Y-values', placeholder="Select Y values", width=300)
+            dc.dropdown('Y-values', placeholder="Select Y values", width=300),
+            dc.dropdown('Color', placeholder="Select color values", width=300)
         ]),
-        dc.row(dc.graph(id='load-files-graph', height=500)),
         dc.row(dc.upload_and_show('csv-upload', app=app)),
     ])
     return layout
