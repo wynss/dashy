@@ -32,9 +32,9 @@ def modal(
         Modal component
     """
     return dbc.Modal([
-        dbc.ModalHeader(header, id=id + '-header'),
-        dbc.ModalBody(body_layout, id=id + '-body'),
-        dbc.ModalFooter(footer_layout, id=id + '-footer')
+        dbc.ModalHeader(header, id=f'{id}-header'),
+        dbc.ModalBody(body_layout, id=f'{id}-body'),
+        dbc.ModalFooter(footer_layout, id=f'{id}-footer')
     ], id=id, size=size.value, scrollable=scrollable)
 
 
