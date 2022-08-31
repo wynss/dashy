@@ -2,7 +2,6 @@ from typing import Optional
 from enum import Enum
 
 from dash import dash_table
-import dash_bootstrap_components as dbc
 import pandas as pd
 
 
@@ -11,13 +10,16 @@ class Selectable(Enum):
     MULTI = 'multi'
     FALSE = False
 
+
 class SortAction(Enum):
     NONE = 'none'
     NATIVE = 'native'
 
+
 class FilterAction(Enum):
     NONE = 'none'
     NATIVE = 'native'
+
 
 class SortMode(Enum):
     SINGLE = 'single'
@@ -51,15 +53,15 @@ def table(
         filter_action (FilterAction, optional): If filtering should be available. Defaults to FilterAction.NONE.
     """
     if columns is None:
-        columns = [{'name': i, 'id': i} for i in data.columns]  
-    
+        columns = [{'name': i, 'id': i} for i in data.columns]
+
     data = data.to_dict('records')
-    
+
     return dash_table.DataTable(
-        data=data, 
-        columns=columns, 
+        data=data,
+        columns=columns,
         id=id,
-        page_size=page_size, 
+        page_size=page_size,
         filter_action=filter_action.value,
         sort_action=sort_action.value,
         sort_mode=sort_mode.value,
