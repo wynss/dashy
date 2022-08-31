@@ -87,7 +87,7 @@ def _generate_table(filename, file_date, df, table_id: str):
     return html.Div([
         html.H5(filename),
         html.H6(datetime.datetime.fromtimestamp(file_date)),
-        table(data=df.to_dict('records'), columns=[{'name': i, 'id': i} for i in df.columns], id=table_id)
+        table(data=df, id=table_id)
     ])
 
 
