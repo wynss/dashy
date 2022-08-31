@@ -36,7 +36,8 @@ def upload(
     children = html.Div(['Drag and Drop or ', html.A('Select Files')])
 
     return col([
-        row(dcc.Upload(id=id, children=children, style=style, multiple=multiple, max_size=max_size, min_size=min_size), margin=0)
+        row(dcc.Upload(id=id, children=children, style=style, multiple=multiple, max_size=max_size, min_size=min_size),
+            margin=0)
     ], auto_size=False, margin=0)
 
 

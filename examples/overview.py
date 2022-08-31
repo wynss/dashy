@@ -17,7 +17,7 @@ DF_MT_BRUNO = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/mas
 # create main layout with a nav bar and tabs
 main_layout = [
     dc.navbar('Dashy Overview!', dark=True, links=['Home', 'Overview', 'Analysis']),
-    dc.tabs(id='tabs', labels=['Plots', 'UI Components', 'Load And Explore'], content_id='my-content')
+    dc.tabs(id='tabs', labels=['UI Components', 'Plots', 'Load And Explore'], content_id='my-content')
 ]
 
 # create the app
