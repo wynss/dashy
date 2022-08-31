@@ -21,7 +21,7 @@ main_layout = [
 ]
 
 # create the app
-app = dy.create_app('MyApp', main_layout, theme=dy.themes.LITERA, suppress_callback_exceptions=True)
+app = dy.create_app('MyApp', main_layout, theme=dy.themes.BOOTSTRAP, suppress_callback_exceptions=True)
 
 
 def create_load_files_example(app: dy.DashyApp):
