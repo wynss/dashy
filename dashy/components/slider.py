@@ -1,7 +1,7 @@
 from typing import Optional, Union
 
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
+from dash import dcc
 
 from .attributes import Placement, SliderUpateMode
 from .layout import col

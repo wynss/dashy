@@ -96,7 +96,7 @@ def row(
         'className': (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
             f"{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)} "
-            f"{'row-auto' if auto_size else ''} d-flex align-items-center"
+            f"{'row-auto justify-items-start' if auto_size else 'justify-items-stretch'} d-flex align-items-center"
         ),
         **kwargs
     }
@@ -124,7 +124,7 @@ def col(
 
     Args:
         children (list, optional): Children of the container. Defaults to None.
-        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin (int, optional): Margin will be overridden if any specific margin is specified. Defaults to 1.
         margin_right (int, optional): Margin left. Defaults to None.
         margin_left (int, optional): Margin right. Defaults to None.
         margin_top (int, optional): Margin top. Defaults to None.
@@ -143,7 +143,7 @@ def col(
         'className': (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
             f"{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)} "
-            f"{'col-auto' if auto_size else ''} d-flex flex-column align-items-start"
+            f"{'col-auto align-items-start' if auto_size else 'align-items-stretch'} d-flex flex-column"
         ),
         **kwargs
     }

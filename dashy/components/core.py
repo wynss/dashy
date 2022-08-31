@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
 
 from .attributes import Size, InputType, Color, Trigger, Placement
-from .layout import container, row, col
+from .layout import container, row, col, div
 from .helpers import value_from_label, create_options
 
 
@@ -329,7 +329,7 @@ def dropdown(
     title_div = html.Div(title)
     dropdown = dcc.Dropdown(**kwargs)
 
-    return col(dbc.Form([title_div, dropdown]))
+    return col(div([title_div, dropdown]))
 
 
 def checks(
