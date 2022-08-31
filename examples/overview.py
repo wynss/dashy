@@ -17,7 +17,7 @@ DF_MT_BRUNO = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/mas
 # create main layout with a nav bar and tabs
 main_layout = [
     dc.navbar('Dashy Overview!', dark=True, links=['Home', 'Overview', 'Analysis']),
-    dc.tabs(id='tabs', labels=['Plots', 'UI Components', 'Load Files'], content_id='my-content')
+    dc.tabs(id='tabs', labels=['Plots', 'UI Components', 'Load And Explore'], content_id='my-content')
 ]
 
 # create the app
@@ -130,7 +130,7 @@ def switch_tabs(tab_id: str):
                 ], margin=0),
                 dc.row(dc.upload('upload'), margin=0)
             ], margin=0)
-        case 'load-files':
+        case 'load-and-explore':
             return load_files_layout
 
 

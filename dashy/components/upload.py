@@ -25,21 +25,19 @@ def upload(
         min_size (int, optional): Min file size in bytes. Defaults to 0.
     """
     style = {
-        'width': '100%',
         'height': '60px',
         'lineHeight': '60px',
         'borderWidth': '1px',
         'borderStyle': 'dashed',
         'borderRadius': '5px',
-        'textAlign': 'center',
-        'margin': '10px'
+        'textAlign': 'center'
     }
 
     children = html.Div(['Drag and Drop or ', html.A('Select Files')])
 
     return col([
-        row(dcc.Upload(id=id, children=children, style=style, multiple=multiple, max_size=max_size, min_size=min_size))
-    ], auto_size=False)
+        row(dcc.Upload(id=id, children=children, style=style, multiple=multiple, max_size=max_size, min_size=min_size), margin=0)
+    ], auto_size=False, margin=0)
 
 
 def upload_and_show(
@@ -48,7 +46,7 @@ def upload_and_show(
         multiple: bool = False,
         max_size: int = -1,
         min_size: int = 0
-):
+) -> dbc.Col:
     """Upload component that also generates a table when a csv or excel file is uploaded
 
     Args:
