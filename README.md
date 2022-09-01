@@ -31,7 +31,7 @@ pip install dash-dashy
 
 ## Key Features
 
-#### Simpler callbacks
+### Simpler callbacks
 Dash callbacks usually looks like
 ```python
 @app.callback(
@@ -52,7 +52,7 @@ In order to make callbacks less verbose Dashy apps has its own callback decorato
 def some_callback_func(...):
   ...
 ```
-Dashy also assume an implicit order of the decorator arguments which is, inputs -> outputs -> states. Which is handy for really simple callbacks like
+Dashy also assume an implicit order of the decorator arguments which is, inputs -> outputs -> states. This is handy for simple callbacks like
 ```python
 # callback taking buttons clicks as input and outputs 'children' to 'container'
 @app.cb(('btn-1', 'n_clicks'), ('container', 'children'))
@@ -61,22 +61,22 @@ def some_callback_func(...):
 ```
 Dashy callbacks also does not require an explicit output.
 ```python
-# Do something when the button is clicked
+# do something when the button is clicked
 @app.cb(('btn-1', 'n_clicks'))
 def some_callback_func(...):
   ...
 ```
 
-### High level fuction components
+### High level function components
 All components in Dashy are functions, import what you need or everything
 ```python
-# import individal components
+# import individual components
 from dashy.components import navbar, button, graph, dropdown
 # or
 import dashy.components as dc
 ```
 ### Layout
-Dashy utilizes bootstrap's layout system and tries to handle as much of the layout as possible while still making the dashboards look good. Import the `container` `row` and `col` components and build your layout.
+Dashy utilizes bootstrap's grid system and tries to handle as much of the layout as possible while still making the dashboards look good. Import the `container` `row` and `col` components and build your layout.
 ```python
 from dashy.components import container, row, col
 
@@ -85,12 +85,12 @@ layout = container([
     # your components
   ]),
   col([
-    # More components
+    # more components
   ])
 ])
 ```
 
-### Complete App Example
+### Complete app example
 Building an app with a navbar, tabs and a callback to switch tabs becomes
 ```python
 from dashy import create_app
@@ -114,7 +114,8 @@ if __name__ == "__main__":
 
 
 ## Future
-* Intregrate all components with bootstrap themes
+- [ ] Integrate all components with bootstrap themes
+- [ ] Dashboard templates
 
 ## Credits
 
