@@ -43,7 +43,7 @@ Dash callbacks usually looks like
 def some_callback_func(...):
   ...
 ```
-In order to make callbacks less verbose Dashy apps has its own callback decorator using only list and tuples. The example above reduces to
+In order to make callbacks less verbose Dashy apps has its own callback decorator using only list and tuples as arguments. The example above reduces to
 ```python
 @app.cb(
   inputs=[('btn-1', 'n_clicks'), ('btn-2', 'n_clicks'), ('btn-3', 'n_clicks')],
@@ -70,6 +70,7 @@ def some_callback_func(...):
 ### High level fuction components
 All components in Dashy are functions, import what you need or everything
 ```python
+# import individal components
 from dashy.components import navbar, button, graph, dropdown
 # or
 import dashy.components as dc
@@ -93,17 +94,18 @@ layout = container([
 Building an app with a navbar, tabs and a callback to switch tabs becomes
 ```python
 from dashy import create_app
-from dashy.components import nabvar, tabs, div
+from dashy.components import navbar, tabs, div
+
 
 app = create_app(__name__, layout=[
-    dc.navbar('My App', dark=True),
-    dc.tabs(id='tabs', labels=['Tab1', 'Tab2', 'Tab3'], content_id='tab-content')
+    navbar('My App', dark=True),
+    tabs(id='tabs', labels=['Tab1', 'Tab2', 'Tab3'], content_id='tab-content')
 ])
 
 
 @app.cb(('tabs', 'active_tab'), ('tab-content', 'children'))
 def switch_tabs(tab_id: str):
-    return dc.div(f'Hello from {tab_id}')
+    return div(f'Hello from {tab_id}')
 
 
 if __name__ == "__main__":

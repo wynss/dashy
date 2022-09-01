@@ -18,4 +18,4 @@ def toggle_modal(clicks, is_open):
 
 
 if __name__ == '__main__':
-    app.run_app()
+    app.launch()

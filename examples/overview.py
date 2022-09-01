@@ -141,4 +141,4 @@ def btn_spinner(_):
 
 
 if __name__ == "__main__":
-    app.run_app(debug=True)
+    app.launch(debug=True)

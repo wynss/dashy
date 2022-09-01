@@ -2,11 +2,10 @@ import logging
 from functools import wraps
 
 import dash
+from dash import html, dcc
 from dash.dependencies import Output, Input, State
 from dash_bootstrap_components import themes
 import plotly.graph_objs as go
-
-from dashy import components as cp
 
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
@@ -46,9 +45,9 @@ class DashyApp(dash.Dash):
 
         # self.theme = theme()
         self.hidden_div_count = 0
-        self.layout = cp.html.Div(layout)
+        self.layout = html.Div(layout)
 
-    def run_app(self, debug=False, **kwargs):
+    def launch(self, debug=False, **kwargs):
 
         # Generate css files for theme
         # self.theme.compile()
@@ -67,7 +66,7 @@ class DashyApp(dash.Dash):
             self.hidden_div_count += 1
             output_id = f'auto-hidden-{self.hidden_div_count}'
             output_element = 'children'
-            self.layout.children.append(cp.html.Div(id=output_id, style={'display': 'none'}))
+            self.layout.children.append(html.Div(id=output_id, style={'display': 'none'}))
             outputs = [(output_id, output_element)]
         elif not isinstance(outputs, tuple) and not isinstance(outputs, list):
             raise ValueError("'inputs' needs to be a tuple or a list of tuples")
@@ -153,7 +152,7 @@ class DashyApp(dash.Dash):
 
         if isinstance(components, (list, tuple)):
             for comp in components:
-                if isinstance(comp, cp.dcc.Graph):
+                if isinstance(comp, dcc.Graph):
                     # Add theme colors to layout
                     self._apply_to_figure(comp.figure)
                 if isinstance(comp, go.Figure):

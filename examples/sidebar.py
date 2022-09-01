@@ -17,4 +17,4 @@ def switch_page(url):
 
 
 if __name__ == '__main__':
-    app.run_app()
+    app.launch()
