@@ -1,19 +1,17 @@
-import dashy.dashy as dy
-import dashy.components as dc
+from dashy import create_app
+from dashy.components import navbar, tabs, div
 
 
-layout = [
-    dc.navbar('Hello Tabs!', dark=True),
-    dc.tabs(id='tabs', labels=['Tab1', 'Tab2', 'Tab3'], content_id='my-content')
-]
-
-app = dy.create_app('MyApp', layout)
+app = create_app(__name__, layout=[
+    navbar('My App', dark=True),
+    tabs(id='tabs', labels=['Tab1', 'Tab2', 'Tab3'], content_id='tab-content')
+])
 
 
-@app.cb(('tabs', 'active_tab'), ('my-content', 'children'))
+@app.cb(('tabs', 'active_tab'), ('tab-content', 'children'))
 def switch_tabs(tab_id: str):
-    return dc.div(f'Hello from {tab_id}')
+    return div(f'Hello from {tab_id}')
 
 
 if __name__ == "__main__":
-    app.run_app(debug=True)
+    app.launch()
