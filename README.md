@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="#how-to-use">How To Use</a> |
+  <a href="#install">How To Use</a> |
   <a href="#key-features">Key Features</a> |
   <a href="#future">Future</a> |
   <a href="#credits">Credits</a> |
@@ -22,8 +22,7 @@
 
 <!-- ![screenshot]() -->
 
-## How to Use
-### Install
+## Install
 ```bash
 pip install dash-dashy
 ```
