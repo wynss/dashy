@@ -27,10 +27,23 @@ dependencies = [
 requires-python = ">=3.9"
 
 [project.optional-dependencies]
-dev = ["flake8", "pytest"]
+dev = ["flake8", "pytest", "black", "bumpver", "build", "twine"]
 
 [project.urls]
 homepage = "https://github.com/wynss/dashy"
 
 [project.scripts]
 dashy = "dashy.__main__:description"
+
+[tool.bumpver]
+current_version = "0.0.1"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
