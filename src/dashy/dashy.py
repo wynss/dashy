@@ -8,7 +8,7 @@ from dash_bootstrap_components import themes
 import plotly.graph_objs as go
 
 
-logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s')
+logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -26,11 +26,7 @@ def create_app(name: str, layout: list = None, theme=themes.FLATLY, **kwargs):
     """
 
     app = DashyApp(
-        theme=theme,
-        layout=layout,
-        name=name,
-        external_stylesheets=[theme],
-        **kwargs
+        theme=theme, layout=layout, name=name, external_stylesheets=[theme], **kwargs
     )
 
     return app
@@ -40,6 +36,7 @@ class DashyApp(dash.Dash):
     """
     Small wrapper class for dash.Dash class
     """
+
     def __init__(self, theme, layout: list, **kwargs):
         super().__init__(**kwargs)
 
@@ -64,9 +61,11 @@ class DashyApp(dash.Dash):
         # Handle outputs
         if outputs is None:
             self.hidden_div_count += 1
-            output_id = f'auto-hidden-{self.hidden_div_count}'
-            output_element = 'children'
-            self.layout.children.append(html.Div(id=output_id, style={'display': 'none'}))
+            output_id = f"auto-hidden-{self.hidden_div_count}"
+            output_element = "children"
+            self.layout.children.append(
+                html.Div(id=output_id, style={"display": "none"})
+            )
             outputs = [(output_id, output_element)]
         elif not isinstance(outputs, tuple) and not isinstance(outputs, list):
             raise ValueError("'inputs' needs to be a tuple or a list of tuples")
@@ -76,9 +75,9 @@ class DashyApp(dash.Dash):
         output_list = []
         for o in outputs:
             if not isinstance(o, tuple):
-                raise ValueError(f'an input must be tuple was: {type(o)}')
+                raise ValueError(f"an input must be tuple was: {type(o)}")
             if len(o) != 2:
-                raise ValueError('an input must contain exactly 2 strings')
+                raise ValueError("an input must contain exactly 2 strings")
             output_id, output_element = o
             output_list.append(Output(output_id, output_element))
         if len(output_list) == 1:
@@ -93,9 +92,9 @@ class DashyApp(dash.Dash):
         input_list = []
         for i in inputs:
             if not isinstance(i, tuple):
-                raise ValueError(f'an input must be tuple was: {type(i)}')
+                raise ValueError(f"an input must be tuple was: {type(i)}")
             if len(i) != 2:
-                raise ValueError('an input must contain exactly 2 strings')
+                raise ValueError("an input must contain exactly 2 strings")
 
             input_id, input_element = i
             input_list.append(Input(input_id, input_element))
@@ -111,9 +110,9 @@ class DashyApp(dash.Dash):
 
             for s in states:
                 if not isinstance(s, tuple):
-                    raise ValueError(f'a state must be tuple was: {type(s)}')
+                    raise ValueError(f"a state must be tuple was: {type(s)}")
                 if len(s) != 2:
-                    raise ValueError('a state must contain exactly 2 strings')
+                    raise ValueError("a state must contain exactly 2 strings")
                 state_id, state_element = s
                 state_list.append(State(state_id, state_element))
 
@@ -130,6 +129,7 @@ class DashyApp(dash.Dash):
 
             def wrapper():
                 return None
+
             return wrapper
 
         return decorator_callback
@@ -158,7 +158,7 @@ class DashyApp(dash.Dash):
                 if isinstance(comp, go.Figure):
                     self._apply_to_figure(comp)
 
-                elif hasattr(comp, 'children'):
+                elif hasattr(comp, "children"):
                     self.apply_theme(comp.children)
         return components
 
@@ -166,23 +166,26 @@ class DashyApp(dash.Dash):
         figure.layout.paper_bgcolor = self.theme.white
         figure.layout.plot_bgcolor = self.theme.white
 
-        figure.layout.font['color'] = self.theme.black
+        figure.layout.font["color"] = self.theme.black
 
-        figure.layout.xaxis['zerolinecolor'] = self.theme.background_color
-        figure.layout.yaxis['zerolinecolor'] = self.theme.background_color
+        figure.layout.xaxis["zerolinecolor"] = self.theme.background_color
+        figure.layout.yaxis["zerolinecolor"] = self.theme.background_color
 
-        figure.layout.xaxis['gridcolor'] = self.theme.background_color
-        figure.layout.yaxis['gridcolor'] = self.theme.background_color
+        figure.layout.xaxis["gridcolor"] = self.theme.background_color
+        figure.layout.yaxis["gridcolor"] = self.theme.background_color
 
         margin = figure.layout.margin
         default_margin = {
-            'l': margin.l if margin.l is not None else 40,
-            'r': margin.r if margin.r is not None else 40,
-            'b': margin.b if margin.b is not None else 40,
-            't': margin.t if margin.t is not None else 70,
-            'pad': margin.pad if margin.pad is not None else 0}
+            "l": margin.l if margin.l is not None else 40,
+            "r": margin.r if margin.r is not None else 40,
+            "b": margin.b if margin.b is not None else 40,
+            "t": margin.t if margin.t is not None else 70,
+            "pad": margin.pad if margin.pad is not None else 0,
+        }
         figure.layout.margin = default_margin
 
-        title_text = figure.layout.title['text']
+        title_text = figure.layout.title["text"]
         if title_text is not None:
-            figure.layout.title = dict(text=title_text, x=0.5, y=1.0, pad=dict(t=30), font=dict(size=18))
+            figure.layout.title = dict(
+                text=title_text, x=0.5, y=1.0, pad=dict(t=30), font=dict(size=18)
+            )

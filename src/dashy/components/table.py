@@ -6,24 +6,24 @@ import pandas as pd
 
 
 class Selectable(Enum):
-    SINGLE = 'single'
-    MULTI = 'multi'
+    SINGLE = "single"
+    MULTI = "multi"
     FALSE = False
 
 
 class SortAction(Enum):
-    NONE = 'none'
-    NATIVE = 'native'
+    NONE = "none"
+    NATIVE = "native"
 
 
 class FilterAction(Enum):
-    NONE = 'none'
-    NATIVE = 'native'
+    NONE = "none"
+    NATIVE = "native"
 
 
 class SortMode(Enum):
-    SINGLE = 'single'
-    MULTI = 'multi'
+    SINGLE = "single"
+    MULTI = "multi"
 
 
 def table(
@@ -36,14 +36,14 @@ def table(
     cell_selectable: bool = False,
     sort_action: SortAction = SortAction.NATIVE,
     sort_mode: SortMode = SortMode.SINGLE,
-    filter_action: FilterAction = FilterAction.NONE
+    filter_action: FilterAction = FilterAction.NONE,
 ):
     """A Data Table.
 
     Args:
-        data (pd.DataFrame): Dataframe that should be displayed in the table
+        data (pd.DataFrame): Data frame that should be displayed in the table
         id (str): Id of the table
-        columns (Optional[list[dict]], optional): Columns of the table. Will be genereated from the dataframe if not provided.
+        columns (Optional[list[dict]], optional): Columns of the table. Will be generated from the dataframe if not provided.
         page_size (int, optional): Max columns per page. Defaults to 10.
         row_selectable (Selectable, optional): If rows should be selectable. Defaults to Selectable.FALSE.
         col_selectable (Selectable, optional): If cols should be selectable. Defaults to Selectable.FALSE.
@@ -53,9 +53,9 @@ def table(
         filter_action (FilterAction, optional): If filtering should be available. Defaults to FilterAction.NONE.
     """
     if columns is None:
-        columns = [{'name': i, 'id': i} for i in data.columns]
+        columns = [{"name": i, "id": i} for i in data.columns]
 
-    data = data.to_dict('records')
+    data = data.to_dict("records")
 
     return dash_table.DataTable(
         data=data,
@@ -67,5 +67,5 @@ def table(
         sort_mode=sort_mode.value,
         row_selectable=row_selectable.value,
         column_selectable=col_selectable.value,
-        cell_selectable=cell_selectable
+        cell_selectable=cell_selectable,
     )

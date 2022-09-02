@@ -16,7 +16,7 @@ def modal(
     body_layout: Optional[Any] = None,
     footer_layout: Optional[Any] = None,
     size: Size = Size.LG,
-    scrollable: bool = True
+    scrollable: bool = True,
 ) -> dbc.Modal:
     """Modal component.
 
@@ -31,26 +31,31 @@ def modal(
     Returns:
         Modal component
     """
-    return dbc.Modal([
-        dbc.ModalHeader(header, id=f'{id}-header'),
-        dbc.ModalBody(body_layout, id=f'{id}-body'),
-        dbc.ModalFooter(footer_layout, id=f'{id}-footer')
-    ], id=id, size=size.value, scrollable=scrollable)
+    return dbc.Modal(
+        [
+            dbc.ModalHeader(header, id=f"{id}-header"),
+            dbc.ModalBody(body_layout, id=f"{id}-body"),
+            dbc.ModalFooter(footer_layout, id=f"{id}-footer"),
+        ],
+        id=id,
+        size=size.value,
+        scrollable=scrollable,
+    )
 
 
 def button(
-        text: str,
-        id: str,
-        color: Color = Color.PRIMARY,
-        n_clicks: int = 0,
-        spinner_div_id: Optional[str] = None,
-        popover_header: Optional[str] = None,
-        popover_body: Any = None,
-        popover_trigger: Trigger = Trigger.HOVER,
-        popover_placement: Placement = Placement.TOP,
-        popover_delay: Optional[dict[str, int] | int] = None
+    text: str,
+    id: str,
+    color: Color = Color.PRIMARY,
+    n_clicks: int = 0,
+    spinner_div_id: Optional[str] = None,
+    popover_header: Optional[str] = None,
+    popover_body: Any = None,
+    popover_trigger: Trigger = Trigger.HOVER,
+    popover_placement: Placement = Placement.TOP,
+    popover_delay: Optional[dict[str, int] | int] = None,
 ) -> dbc.Col:
-    """ A Button
+    """A Button
 
     Args:
         text (str): Text that will be shown on the button
@@ -72,45 +77,50 @@ def button(
     """
 
     kwargs: dict[str, Any] = {
-        'id': id,
-        'color': color.value,
-        'n_clicks': n_clicks,
-        'active': 0,
+        "id": id,
+        "color": color.value,
+        "n_clicks": n_clicks,
+        "active": 0,
     }
 
     # handle spinner
     if spinner_div_id:
-        kwargs['children'] = row([
-            col(text, margin=0),
-            col(spinner(spinner_div_id, size=Size.SM), margin_left=3),
-        ], margin=0)
+        kwargs["children"] = row(
+            [
+                col(text, margin=0),
+                col(spinner(spinner_div_id, size=Size.SM), margin_left=3),
+            ],
+            margin=0,
+        )
     else:
-        kwargs['children'] = text
+        kwargs["children"] = text
 
     ret = [dbc.Button(**kwargs)]
 
     # Handle popover
     if popover_header is not None or popover_body is not None:
         pop_kwargs = {
-            'children': [
+            "children": [
                 dbc.PopoverHeader(popover_header) if popover_header else None,
-                dbc.PopoverBody(popover_body) if popover_body else None
+                dbc.PopoverBody(popover_body) if popover_body else None,
             ],
-            'target': id,
+            "target": id,
             Trigger.class_name(): popover_trigger.value,
             Placement.class_name(): popover_placement.value,
         }
 
         if popover_delay is not None:
             if isinstance(popover_delay, int):
-                popover_delay = {'show': popover_delay, 'hide': popover_delay}
+                popover_delay = {"show": popover_delay, "hide": popover_delay}
             elif isinstance(popover_delay, dict):
-                if 'hide' not in popover_delay or 'show' not in popover_delay:
-                    raise ValueError("Popover delay dict must contain 'show' and 'hide'.")
+                if "hide" not in popover_delay or "show" not in popover_delay:
+                    raise ValueError(
+                        "Popover delay dict must contain 'show' and 'hide'."
+                    )
             else:
                 raise ValueError("Popover delay must be a 'dict' or an 'int'.")
 
-            pop_kwargs['delay'] = popover_delay
+            pop_kwargs["delay"] = popover_delay
 
         popover = dbc.Popover(**pop_kwargs)
         ret.append(popover)
@@ -122,7 +132,7 @@ def button_group(
     id: str,
     names: List[str],
     ids: Optional[List[str]] = None,
-    color: Color = Color.PRIMARY
+    color: Color = Color.PRIMARY,
 ) -> dbc.ButtonGroup:
     """A group of buttons
 
@@ -136,18 +146,20 @@ def button_group(
         Button group
     """
     if ids is None:
-        ids = [f'{value_from_label(n)}-button' for n in names]
-    return dbc.ButtonGroup([button(n, id, color=color.value) for n, id in zip(names, ids)], id=id)
+        ids = [f"{value_from_label(n)}-button" for n in names]
+    return dbc.ButtonGroup(
+        [button(n, id, color=color.value) for n, id in zip(names, ids)], id=id
+    )
 
 
 def graph(
-        id: str,
-        figure: Optional[Figure] = None,
-        responsive: Union[str, bool] = True,
-        animate: bool = False,
-        mathjax: bool = False,
-        hide: bool = False,
-        height: Optional[int] = None
+    id: str,
+    figure: Optional[Figure] = None,
+    responsive: Union[str, bool] = True,
+    animate: bool = False,
+    mathjax: bool = False,
+    hide: bool = False,
+    height: Optional[int] = None,
 ) -> dbc.Col:
     """A Graph
 
@@ -166,36 +178,49 @@ def graph(
     kwargs = {}
     if figure is not None:
         # center title
-        figure.update_layout(dict(title={'x': 0.5}))
-        kwargs['figure'] = figure
+        figure.update_layout(dict(title={"x": 0.5}))
+        kwargs["figure"] = figure
 
-    parent_style = {'align-self': 'stretch'}
+    parent_style = {"align-self": "stretch"}
 
     if height is not None:
-        parent_style['height'] = f'{height}px'
+        parent_style["height"] = f"{height}px"
 
     if hide:
-        parent_style['display'] = 'none'
+        parent_style["display"] = "none"
 
-    return col(children=[
-        dcc.Graph(id=id, **kwargs, className="w-100 h-100", animate=animate, responsive=responsive, mathjax=mathjax)
-    ], style=parent_style, id=id + '-parent', margin=0, auto_size=False)
+    return col(
+        children=[
+            dcc.Graph(
+                id=id,
+                **kwargs,
+                className="w-100 h-100",
+                animate=animate,
+                responsive=responsive,
+                mathjax=mathjax,
+            )
+        ],
+        style=parent_style,
+        id=id + "-parent",
+        margin=0,
+        auto_size=False,
+    )
 
 
 def dropdown(
-        title: str,
-        id: str = None,
-        labels: list = None,
-        initial_label=None,
-        values: list = None,
-        options: list = None,
-        placeholder: str = None,
-        clearable=True,
-        searchable=False,
-        multi=False,
-        width=None,
-        grow=False,
-        shrink=False
+    title: str,
+    id: str = None,
+    labels: list = None,
+    initial_label=None,
+    values: list = None,
+    options: list = None,
+    placeholder: str = None,
+    clearable=True,
+    searchable=False,
+    multi=False,
+    width=None,
+    grow=False,
+    shrink=False,
 ) -> dbc.Col:
     """A Dropdown.
 
@@ -223,40 +248,40 @@ def dropdown(
     """
     style = {}
     if width is not None:
-        style['width'] = width
-    style['flex'] = f'{int(grow)} {int(shrink)} auto'
+        style["width"] = width
+    style["flex"] = f"{int(grow)} {int(shrink)} auto"
 
     kwargs = {
-        'clearable': clearable,
-        'searchable': searchable,
-        'multi': multi,
-        'style': style
+        "clearable": clearable,
+        "searchable": searchable,
+        "multi": multi,
+        "style": style,
     }
 
     if options is not None:
         if labels is not None or values is not None:
-            raise ValueError('If passing options labels nor values can be passed')
-        kwargs['options'] = options
+            raise ValueError("If passing options labels nor values can be passed")
+        kwargs["options"] = options
 
     elif labels is not None:
         options = create_options(labels, values)
-        kwargs['options'] = options
+        kwargs["options"] = options
 
         if initial_label is not None:
             if isinstance(initial_label, int):
-                kwargs['value'] = value_from_label(labels[initial_label])
+                kwargs["value"] = value_from_label(labels[initial_label])
             elif isinstance(initial_label, str):
                 if initial_label in labels:
-                    kwargs['value'] = value_from_label(initial_label)
+                    kwargs["value"] = value_from_label(initial_label)
                 else:
                     raise ValueError("'initial_label' does not exist in 'labels' list")
 
     if id is None:
-        id = value_from_label(title) + '-drop'
-    kwargs['id'] = id
+        id = value_from_label(title) + "-drop"
+    kwargs["id"] = id
 
     if placeholder is not None:
-        kwargs['placeholder'] = placeholder
+        kwargs["placeholder"] = placeholder
 
     title_div = html.Div(title)
     dropdown = dcc.Dropdown(**kwargs)
@@ -265,13 +290,13 @@ def dropdown(
 
 
 def checks(
-        id: str,
-        labels: list,
-        values: list = None,
-        initial: Optional[Union[str, int, list[str], list[int]]] = None,
-        header: Optional[str] = None,
-        inline: bool = True,
-        toggles: bool = False
+    id: str,
+    labels: list,
+    values: list = None,
+    initial: Optional[Union[str, int, list[str], list[int]]] = None,
+    header: Optional[str] = None,
+    inline: bool = True,
+    toggles: bool = False,
 ) -> dbc.Col:
     """Checkboxes
 
@@ -288,12 +313,7 @@ def checks(
         Component containing the checkboxes
     """
     options = create_options(labels, values)
-    kwargs = {
-        'id': id,
-        'options': options,
-        'inline': inline,
-        'switch': toggles
-    }
+    kwargs = {"id": id, "options": options, "inline": inline, "switch": toggles}
 
     # handle inital values
     if initial is not None:
@@ -301,11 +321,13 @@ def checks(
             initial = [initial]
 
         if all([isinstance(el, str) for el in initial]):
-            kwargs['value'] = [op['value'] for op in options if op['label'] in initial]
+            kwargs["value"] = [op["value"] for op in options if op["label"] in initial]
         elif all([isinstance(el, int) for el in initial]):
-            kwargs['value'] = [options[i]['value'] for i in initial]
+            kwargs["value"] = [options[i]["value"] for i in initial]
         else:
-            raise ValueError("'initial' need to contain all 'str' or all 'int' if passed as a 'list'")
+            raise ValueError(
+                "'initial' need to contain all 'str' or all 'int' if passed as a 'list'"
+            )
 
     container_children = []
     if header is not None:
@@ -316,12 +338,12 @@ def checks(
 
 
 def radios(
-        id: str,
-        labels: list,
-        values: Optional[list] = None,
-        initial: Optional[Union[str, int]] = None,
-        header: Optional[str] = None,
-        inline: bool = True
+    id: str,
+    labels: list,
+    values: Optional[list] = None,
+    initial: Optional[Union[str, int]] = None,
+    header: Optional[str] = None,
+    inline: bool = True,
 ) -> dbc.Col:
     """Radio buttons
 
@@ -338,17 +360,17 @@ def radios(
     """
     options = create_options(labels, values)
     kwargs = {
-        'id': id,
-        'options': options,
-        'inline': inline,
+        "id": id,
+        "options": options,
+        "inline": inline,
     }
 
     # handle initial value
     if initial is not None:
         if isinstance(initial, int):
-            kwargs['value'] = [options[initial]['value']]
+            kwargs["value"] = [options[initial]["value"]]
         elif isinstance(initial, str):
-            kwargs['value'] = [op['value'] for op in options if op['label'] == initial]
+            kwargs["value"] = [op["value"] for op in options if op["label"] == initial]
 
     container_children = []
     if header is not None:
@@ -359,10 +381,10 @@ def radios(
 
 
 def inputs(
-        titles: Union[str, List[str]],
-        ids: Optional[Union[str, List[str]]] = None,
-        input_type: Optional[Union[InputType, list[InputType]]] = None,
-        size: Size = Size.MD
+    titles: Union[str, List[str]],
+    ids: Optional[Union[str, List[str]]] = None,
+    input_type: Optional[Union[InputType, list[InputType]]] = None,
+    size: Size = Size.MD,
 ) -> dbc.Col:
     """An input compnent or a set of input components.
 
@@ -384,31 +406,40 @@ def inputs(
 
     if isinstance(input_type, list):
         if len(input_type) != len(titles):
-            raise ValueError("Number of 'titles' and specified 'input_type' must the same.")
+            raise ValueError(
+                "Number of 'titles' and specified 'input_type' must the same."
+            )
     elif input_type is None:
         input_type = len(titles) * [InputType.NUMBER]
 
     if ids is None:
-        ids = [value_from_label(t) + '-input' for t in titles]
+        ids = [value_from_label(t) + "-input" for t in titles]
     elif isinstance(ids, str):
         ids = [ids]
 
     return col(
-        row([
-            col(dbc.Form(
-                [dbc.Label(t), dbc.Input(id=i, type=it.value, size=size.value)]
-            ), margin=1) for i, t, it in zip(ids, titles, input_type)
-        ], margin=0),
-        margin=0
+        row(
+            [
+                col(
+                    dbc.Form(
+                        [dbc.Label(t), dbc.Input(id=i, type=it.value, size=size.value)]
+                    ),
+                    margin=1,
+                )
+                for i, t, it in zip(ids, titles, input_type)
+            ],
+            margin=0,
+        ),
+        margin=0,
     )
 
 
 def card(
-        id: str,
-        title: Optional[str] = None,
-        text: Optional[str] = None,
-        body_layout: Optional[list] = None,
-        color: Color = Color.PRIMARY
+    id: str,
+    title: Optional[str] = None,
+    text: Optional[str] = None,
+    body_layout: Optional[list] = None,
+    color: Color = Color.PRIMARY,
 ) -> dbc.Col:
     """A card
 
@@ -425,11 +456,13 @@ def card(
     if body_layout is None:
         if title is not None and text is not None:
             body_layout = [
-                html.H4(id=id + '-title', children=title, className='card-title'),
-                html.P(id=id + '-text', children=text, className='card-text')
+                html.H4(id=id + "-title", children=title, className="card-title"),
+                html.P(id=id + "-text", children=text, className="card-text"),
             ]
         else:
-            raise ValueError("Must pass both 'title' and 'text' to card if 'body_layout' is not passed")
+            raise ValueError(
+                "Must pass both 'title' and 'text' to card if 'body_layout' is not passed"
+            )
 
     # handle text color
     if color == Color.LIGHT:
@@ -437,7 +470,12 @@ def card(
     else:
         inverse = True
 
-    return col(dbc.Card([dbc.CardBody(body_layout)], id=id, color=color.value, inverse=inverse), margin=1)
+    return col(
+        dbc.Card(
+            [dbc.CardBody(body_layout)], id=id, color=color.value, inverse=inverse
+        ),
+        margin=1,
+    )
 
 
 def date_range_picker(id: str, clearable: bool = False) -> dcc.DatePickerRange:
@@ -450,7 +488,9 @@ def date_range_picker(id: str, clearable: bool = False) -> dcc.DatePickerRange:
     Returns:
         dcc.DatePickerRange
     """
-    return dcc.DatePickerRange(id=id, clearable=clearable, className='d-flex align-self-center')
+    return dcc.DatePickerRange(
+        id=id, clearable=clearable, className="d-flex align-self-center"
+    )
 
 
 def spinner(spinner_comp_id: str, size: Size) -> dbc.Spinner:
@@ -466,7 +506,7 @@ def spinner(spinner_comp_id: str, size: Size) -> dbc.Spinner:
     return dbc.Spinner(
         children=hidden_div(spinner_comp_id),
         size=size.value,
-        spinner_class_name="flex-shrink-0"
+        spinner_class_name="flex-shrink-0",
     )
 
 
@@ -482,7 +522,9 @@ def progress(id: str) -> dbc.Progress:
     return dbc.Progress(id=id)
 
 
-def interval(id: str, interval: int, n_intervals: int = 0, disabled: bool = True) -> dcc.Interval:
+def interval(
+    id: str, interval: int, n_intervals: int = 0, disabled: bool = True
+) -> dcc.Interval:
     """
     Creates an interval components that will be triggered each 'interval' milliseconds
 
@@ -494,7 +536,9 @@ def interval(id: str, interval: int, n_intervals: int = 0, disabled: bool = True
     Returns:
         dcc.Interval component
     """
-    return dcc.Interval(id=id, interval=interval, n_intervals=n_intervals, disabled=disabled)
+    return dcc.Interval(
+        id=id, interval=interval, n_intervals=n_intervals, disabled=disabled
+    )
 
 
 def hidden_div(id: str, children: Optional[Any] = None) -> html.Div:
@@ -511,4 +555,4 @@ def hidden_div(id: str, children: Optional[Any] = None) -> html.Div:
     Returns:
         A hidden html.Div
     """
-    return html.Div(children=children, id=id, style={'display': 'none'})
+    return html.Div(children=children, id=id, style={"display": "none"})

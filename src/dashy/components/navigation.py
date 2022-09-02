@@ -9,11 +9,11 @@ from .layout import container
 
 
 def navbar(
-        title: str,
-        fluid=True,
-        color: Color = Color.PRIMARY,
-        dark=False,
-        links: List[str] = None
+    title: str,
+    fluid=True,
+    color: Color = Color.PRIMARY,
+    dark=False,
+    links: List[str] = None,
 ) -> dbc.NavbarSimple:
     """A Navbar
 
@@ -28,13 +28,25 @@ def navbar(
     children = []
     if links is not None:
         for link in links:
-            children.append(dbc.NavItem(dbc.NavLink(link, id=value_from_label(link),
-                                                    href=f"/{value_from_label(link)}", active="exact")))
+            children.append(
+                dbc.NavItem(
+                    dbc.NavLink(
+                        link,
+                        id=value_from_label(link),
+                        href=f"/{value_from_label(link)}",
+                        active="exact",
+                    )
+                )
+            )
 
-    return dbc.NavbarSimple(children, brand=title, fluid=fluid, dark=dark, color=color.value)
+    return dbc.NavbarSimple(
+        children, brand=title, fluid=fluid, dark=dark, color=color.value
+    )
 
 
-def sidebar(title: str, id: str, links: Optional[list[str]], text: Optional[str]) -> html.Div:
+def sidebar(
+    title: str, id: str, links: Optional[list[str]], text: Optional[str]
+) -> html.Div:
     """A sidebar.
 
     The urls are built by converting the link string to kebab-case. So for example 'My Analysis' yields the url '/my-analysis'.
@@ -70,29 +82,30 @@ def sidebar(title: str, id: str, links: Optional[list[str]], text: Optional[str]
             html.Hr(),
             html.P(text, className="lead") if text else None,
             dbc.Nav(
-                [dbc.NavLink(link, href=f"/{value_from_label(link)}", active="exact") for link in links],
+                [
+                    dbc.NavLink(link, href=f"/{value_from_label(link)}", active="exact")
+                    for link in links
+                ],
                 vertical=True,
-                pills=True
-            ) if links else None,
+                pills=True,
+            )
+            if links
+            else None,
         ],
         style=SIDEBAR_STYLE,
     )
 
     content = html.Div(id=f"{id}-content", style=CONTENT_STYLE)
 
-    return html.Div([
-       dcc.Location(id=f'{id}-url'),
-       sidebar,
-       content
-    ])
+    return html.Div([dcc.Location(id=f"{id}-url"), sidebar, content])
 
 
 def tabs(
-        labels: List[str],
-        id: str,
-        content_id: Optional[str],
-        tab_ids: Optional[List[str]] = None,
-        active_tab: Optional[Union[str, int]] = None
+    labels: List[str],
+    id: str,
+    content_id: Optional[str],
+    tab_ids: Optional[List[str]] = None,
+    active_tab: Optional[Union[str, int]] = None,
 ) -> dbc.Container:
     """Create a set of tabs to navigate between different contents.
 
@@ -107,21 +120,28 @@ def tabs(
         dbc.Container: Containing the tabs
     """
     if tab_ids is None:
-        tab_ids = [label.lower().replace(' ', '-') for label in labels]
+        tab_ids = [label.lower().replace(" ", "-") for label in labels]
 
     tab_element_kwargs = {
-        'children': [dbc.Tab(label=label, tab_id=tab_id) for label, tab_id in zip(labels, tab_ids)],
-        'id': id,
+        "children": [
+            dbc.Tab(label=label, tab_id=tab_id)
+            for label, tab_id in zip(labels, tab_ids)
+        ],
+        "id": id,
     }
 
     if active_tab is not None:
         if isinstance(active_tab, int):
             active_tab = tab_ids[active_tab]
-        tab_element_kwargs['active_tab'] = active_tab
+        tab_element_kwargs["active_tab"] = active_tab
 
     tab_element = dbc.Tabs(**tab_element_kwargs)
 
     if content_id is None:
-        content_id = 'tab-content'
+        content_id = "tab-content"
 
-    return container(id='tab-container', children=[tab_element, container(id=content_id, fluid=True)], fluid=True)
+    return container(
+        id="tab-container",
+        children=[tab_element, container(id=content_id, fluid=True)],
+        fluid=True,
+    )
