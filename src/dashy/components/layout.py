@@ -8,19 +8,19 @@ from .helpers import get_margin_class, get_padding_class
 
 
 def container(
-        children: list = None,
-        fluid: bool = True,
-        margin: int = 1,
-        margin_right: int = None,
-        margin_left: int = None,
-        margin_top: int = None,
-        margin_bottom: int = None,
-        padding: int = 0,
-        padding_right: int = None,
-        padding_left: int = None,
-        padding_top: int = None,
-        padding_bottom: int = None,
-        **kwargs
+    children: list = None,
+    fluid: bool = True,
+    margin: int = 1,
+    margin_right: int = None,
+    margin_left: int = None,
+    margin_top: int = None,
+    margin_bottom: int = None,
+    padding: int = 0,
+    padding_right: int = None,
+    padding_left: int = None,
+    padding_top: int = None,
+    padding_bottom: int = None,
+    **kwargs,
 ) -> dbc.Container:
     """Container component. Use this to hold rows and cols with components.
 
@@ -32,7 +32,7 @@ def container(
         fluid (bool, optional): If True the container-fluid class will be applied, and the Container
                                 will expand to fill available space. Defaults to True.
 
-        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin (int, optional): Margin will be override if any specific margin is specified. Defaults to 1.
         margin_right (int, optional): Margin left. Defaults to None.
         margin_left (int, optional): Margin right. Defaults to None.
         margin_top (int, optional): Margin top. Defaults to None.
@@ -47,11 +47,11 @@ def container(
         dbc.Container
     """
     kwargs = {
-        'className': (
-            f'{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} '
-            f'{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)}'
+        "className": (
+            f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
+            f"{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)}"
         ),
-        **kwargs
+        **kwargs,
     }
     return dbc.Container(children, fluid=fluid, **kwargs)
 
@@ -69,7 +69,7 @@ def row(
     padding_top: int = None,
     padding_bottom: int = None,
     auto_size: bool = True,
-    **kwargs
+    **kwargs,
 ) -> dbc.Row:
     """Row component.
 
@@ -77,7 +77,7 @@ def row(
 
     Args:
         children (list, optional): Children of the container. Defaults to None.
-        margin (int, optional): Margin will be ovvride if any specific margin is specified. Defaults to 1.
+        margin (int, optional): Margin will be override if any specific margin is specified. Defaults to 1.
         margin_right (int, optional): Margin left. Defaults to None.
         margin_left (int, optional): Margin right. Defaults to None.
         margin_top (int, optional): Margin top. Defaults to None.
@@ -93,30 +93,30 @@ def row(
         dbc.Row
     """
     kwargs = {
-        'className': (
+        "className": (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
             f"{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)} "
             f"{'row-auto justify-items-start' if auto_size else 'justify-items-stretch'} d-flex align-items-center"
         ),
-        **kwargs
+        **kwargs,
     }
     return dbc.Row(children, **kwargs)
 
 
 def col(
-        children: Union[list, str, Component],
-        margin: int = 1,
-        margin_right: Optional[int] = None,
-        margin_left: Optional[int] = None,
-        margin_top: Optional[int] = None,
-        margin_bottom: Optional[int] = None,
-        padding: int = 0,
-        padding_right: int = None,
-        padding_left: int = None,
-        padding_top: int = None,
-        padding_bottom: int = None,
-        auto_size: bool = True,
-        **kwargs
+    children: Union[list, str, Component],
+    margin: int = 1,
+    margin_right: Optional[int] = None,
+    margin_left: Optional[int] = None,
+    margin_top: Optional[int] = None,
+    margin_bottom: Optional[int] = None,
+    padding: int = 0,
+    padding_right: int = None,
+    padding_left: int = None,
+    padding_top: int = None,
+    padding_bottom: int = None,
+    auto_size: bool = True,
+    **kwargs,
 ) -> dbc.Col:
     """Col component.
 
@@ -140,17 +140,21 @@ def col(
         dbc.Col
     """
     kwargs = {
-        'className': (
+        "className": (
             f"{get_margin_class(margin, margin_top, margin_bottom, margin_left, margin_right)} "
             f"{get_padding_class(padding, padding_top, padding_bottom, padding_left, padding_right)} "
             f"{'col-auto align-items-start' if auto_size else 'align-items-stretch'} d-flex flex-column"
         ),
-        **kwargs
+        **kwargs,
     }
     return dbc.Col(children, **kwargs)
 
 
-def div(children: Optional[Union[list, str, int, float]] = None, id: str = None, hidden: bool = False):
+def div(
+    children: Optional[Union[list, str, int, float]] = None,
+    id: str = None,
+    hidden: bool = False,
+):
     """Wrapper for html.Div"""
     kwargs = {k: v for k, v in locals().items() if v is not None}
     return html.Div(**kwargs)

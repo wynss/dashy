@@ -21,7 +21,7 @@ def slider(
     tooltip_always_visible: bool = False,
     vertical: bool = False,
     vertical_height: int = 400,
-    allow_cross: bool = False
+    allow_cross: bool = False,
 ) -> dbc.Col:
     """A slider
 
@@ -57,20 +57,20 @@ def slider(
         value=value,
         className="w-100 h-100",
         vertical=vertical,
-        verticalHeight=vertical_height
+        verticalHeight=vertical_height,
     )
 
     if marks is None or isinstance(marks, dict):
-        kwargs['marks'] = marks
+        kwargs["marks"] = marks
 
     if tooltip is True:
-        kwargs['tooltip'] = {
+        kwargs["tooltip"] = {
             Placement.class_name(): tooltip_placement.value,
-            'always_visible': tooltip_always_visible
+            "always_visible": tooltip_always_visible,
         }
 
     if isinstance(value, list):
-        kwargs['allowCross'] = allow_cross
+        kwargs["allowCross"] = allow_cross
         slider = dcc.RangeSlider(**kwargs)
     else:
         slider = dcc.Slider(**kwargs)

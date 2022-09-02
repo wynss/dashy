@@ -5,14 +5,14 @@ import dashy.components as dc
 
 
 layout = [
-    dc.navbar('Hello Spinners!', dark=True, color='secondary'),
-    dc.button('Spin me!', id='my-btn', spinner_div_id='spinner')
+    dc.navbar("Hello Spinners!", dark=True, color="secondary"),
+    dc.button("Spin me!", id="my-btn", spinner_div_id="spinner"),
 ]
 
-app = dy.create_app('MyApp', layout=layout, theme=dy.dbc.themes.SUPERHERO)
+app = dy.create_app("MyApp", layout=layout, theme=dy.dbc.themes.SUPERHERO)
 
 
-@app.cb(('my-btn', 'n_clicks'), ('spinner', 'children'))
+@app.cb(("my-btn", "n_clicks"), ("spinner", "children"))
 def switch_tabs(_):
     sleep(200)
     return ""
